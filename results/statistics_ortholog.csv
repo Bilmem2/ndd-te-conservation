@@ -1,0 +1,11 @@
+species,TE,n_HK,n_NDD,p_value,r,sig,method
+Orangutan,Alu,1386,904,1.7083735030857832e-51,-0.365,***,ortholog_1to1
+Orangutan,LINE1,1386,904,0.010580505827449889,-0.044,*,ortholog_1to1
+Gibbon,Alu,1260,820,1.2486740111992905e-30,-0.291,***,ortholog_1to1
+Gibbon,LINE1,1260,820,0.2907474488489855,-0.012,ns,ortholog_1to1
+Macaque,Alu,1430,929,9.986435661191968e-57,-0.379,***,ortholog_1to1
+Macaque,LINE1,1430,929,0.0035828577982405974,-0.05,**,ortholog_1to1
+Marmoset,Alu,1304,905,1.273002365945768e-09,-0.147,***,ortholog_1to1
+Marmoset,LINE1,1304,905,0.7580756436049718,0.017,ns,ortholog_1to1
+Mouse,LINE1,1508,928,0.0410268007541087,-0.029,*,ortholog_1to1
+Dog,LINE1,1326,848,0.8558714577020421,0.026,ns,ortholog_1to1
