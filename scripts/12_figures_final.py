@@ -56,7 +56,7 @@ for ax, (sp, label, mya) in zip(axes, primates):
     ax.set_title(f"{label}\n~{mya} Mya", fontweight='bold', fontsize=10)
     ax.set_xticks([1,2])
     ax.set_xticklabels(['HK','NDD'], fontsize=10)
-    if ax == axes[0]: ax.set_ylabel('Alu Coverage Fraction', fontsize=11)
+    if ax == axes[0]: ax.set_ylabel('Alu Frequency (count per kb)', fontsize=11)
     n_hk, n_ndd = len(hk), len(ndd)
     ax.text(0.5, -0.18, f'n={n_hk}, {n_ndd}', transform=ax.transAxes,
             ha='center', fontsize=8, color='gray')
@@ -105,7 +105,7 @@ for ax, (sp, label, mya) in zip(axes, all_species):
     ax.set_title(f"{label}\n~{mya} Mya", fontweight='bold', fontsize=9)
     ax.set_xticks([1,2])
     ax.set_xticklabels(['HK','NDD'], fontsize=9)
-    if ax == axes[0]: ax.set_ylabel('LINE-1 Coverage Fraction', fontsize=11)
+    if ax == axes[0]: ax.set_ylabel('LINE-1 Frequency (count per kb)', fontsize=11)
     ax.text(0.5,-0.18, f'n={len(hk)},{len(ndd)}', transform=ax.transAxes,
             ha='center', fontsize=7, color='gray')
 
@@ -141,8 +141,12 @@ sig_mat = []
 for i, (sp, label, alu_te, l1_te) in enumerate(sp_info):
     row = []
     for j, te in enumerate(["Alu", "LINE1"]):
-        fname = f"{RESULTS}/{sp}/HighConfNDD_{te}.bed"
-        hname = f"{RESULTS}/{sp}/Housekeeping_{te}.bed"
+        # Mouse uses B1/B2 as the SINE-class analog of primate Alu
+        te_file = te
+        if sp == "mm10" and te == "Alu":
+            te_file = "B1B2"
+        fname = f"{RESULTS}/{sp}/HighConfNDD_{te_file}.bed"
+        hname = f"{RESULTS}/{sp}/Housekeeping_{te_file}.bed"
         if not os.path.exists(fname) or not os.path.exists(hname):
             row.append("—"); continue
         hk  = get_density(hname)
@@ -157,7 +161,7 @@ fig, ax = plt.subplots(figsize=(7, 7))
 masked = np.ma.masked_invalid(pmat)
 im = ax.imshow(masked, cmap='RdYlGn', aspect='auto', vmin=0, vmax=20)
 plt.colorbar(im, ax=ax, label='-log₁₀(p-value)\nHK > NDD')
-ax.set_xticks([0,1]); ax.set_xticklabels(['Alu/B1B2', 'LINE-1'], fontsize=12)
+ax.set_xticks([0,1]); ax.set_xticklabels(['Alu / B1-B2\n(SINE)', 'LINE-1'], fontsize=11)
 ax.set_yticks(range(7)); ax.set_yticklabels(sp_labels, fontsize=12, fontweight='bold')
 
 for i in range(7):
@@ -189,7 +193,7 @@ null_species = [
     ("hg38",     "Human",    "Alu"),
     ("ponAbe3",  "Orangutan","Alu"),
     ("rheMac10", "Macaque",  "Alu"),
-    ("mm10",     "Mouse",    "LINE1"),
+    ("mm10",     "Mouse",    "B1B2"),
 ]
 
 fig, axes = plt.subplots(1, 4, figsize=(16,5))
@@ -211,13 +215,13 @@ for ax, (sp, label, te) in zip(axes, null_species):
     ax.axvline(obs_p, color='red', linestyle='--', linewidth=2, label='Observed NDD')
     ax.set_xlabel('p-value', fontsize=10)
     if ax == axes[0]: ax.set_ylabel('Frequency', fontsize=10)
-    te_label = "Alu" if te == "Alu" else "LINE-1"
+    te_label = {"Alu": "Alu", "B1B2": "B1/B2 (SINE)", "LINE1": "LINE-1"}[te]
     ax.set_title(f"{label} | {te_label}", fontweight='bold', fontsize=11)
     info = f"Emp. p={emp_p:.4f}\nNull FPR={null_fpr:.3f}"
     ax.text(0.97, 0.97, info, transform=ax.transAxes,
             ha='right', va='top', fontsize=8,
             bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.8))
-    ax.legend(fontsize=8)
+    ax.legend(fontsize=8, loc='upper left')
 
 plt.suptitle(f'Permutation Test: Observed NDD Depletion vs. Random Gene Sets\n'
              f'n={N_PERM:,} permutations',
@@ -241,19 +245,21 @@ for ax, (cpg_status, cpg_label) in zip(axes,
     plot_data = []
     ns = []
     for cat in ['Housekeeping','HighConfNDD']:
-        prom = f"{DATA}/hg38/promoters/promoters_{cat}.bed"
+        # Use existing intersect results (already contains TE counts)
+        alu_file = f"{RESULTS}/hg38/{cat}_Alu.bed"
+        df_alu = pd.read_csv(alu_file, sep='\t', header=None)
+        df_alu.columns = ['chr','start','end','gene','score','strand','alu_count']
+        df_alu['density'] = df_alu['alu_count'] / ((df_alu['end']-df_alu['start'])/1000)
+        # Add CpG overlap
+        alu_file_path = alu_file
         cpg_out = subprocess.run(
-            ["bedtools","intersect","-a",prom,"-b",cpg_bed,"-c"],
+            ["bedtools","intersect","-a",alu_file_path,"-b",cpg_bed,"-c"],
             capture_output=True, text=True).stdout
         df_cpg = pd.read_csv(StringIO(cpg_out), sep='\t', header=None)
-        df_cpg.columns = ['chr','start','end','gene','score','strand','cpg_n']
-        alu_out = subprocess.run(
-            ["bedtools","intersect","-a",prom,"-b",alu_bed,"-c"],
-            capture_output=True, text=True).stdout
-        df_alu = pd.read_csv(StringIO(alu_out), sep='\t', header=None)
-        df_alu['density'] = df_alu.iloc[:,6]/((df_alu.iloc[:,2]-df_alu.iloc[:,1])/1000)
-        df_alu['gene'] = df_alu.iloc[:,3]
-        df = df_cpg.merge(df_alu[['gene','density']], on='gene')
+        df_cpg.columns = ['chr','start','end','gene','score','strand','alu_count','cpg_n']
+        df_cpg['density'] = df_cpg['alu_count'] / ((df_cpg['end']-df_cpg['start'])/1000)
+        df_cpg['gene'] = df_cpg['gene']
+        df = df_cpg[['gene','density','cpg_n']]
         if cpg_status == 'with':
             subset = df[df['cpg_n']>0]['density'].values
         else:
@@ -273,7 +279,7 @@ for ax, (cpg_status, cpg_label) in zip(axes,
     ax.set_title(f'{cpg_label}\nn = {ns[0]}, {ns[1]}', fontweight='bold')
     ax.set_xticks([1,2])
     ax.set_xticklabels(['Housekeeping','NDD'], fontsize=10)
-    ax.set_ylabel('Alu Coverage Fraction' if ax==axes[0] else '')
+    ax.set_ylabel('Alu Frequency (count per kb)' if ax==axes[0] else '')
 
 fig.legend(handles=patches, loc='lower center', ncol=2,
            bbox_to_anchor=(0.5,-0.02), frameon=False, fontsize=10)
