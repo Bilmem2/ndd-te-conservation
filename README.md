@@ -35,7 +35,6 @@ This repository contains all analysis scripts, processed gene lists, statistical
 ├── data/
 │   ├── gene_lists/
 │   │   ├── HighConfNDD_genes.txt      # SFARI Tier 1+2 ∪ ClinGen Epilepsy Definitive/Strong (n=1020)
-│   │   ├── BroadNDD_genes.txt         # HPO: autism, seizure, ADHD, ID ∪ HighConfNDD (n=3360)
 │   │   ├── Housekeeping_genes.txt     # HRT Atlas ∩ brain TPM≥1, NDD-free (n=1679)
 │   │   ├── Cardiovascular_genes.txt   # ClinVar P/LP cardiovascular genes
 │   │   └── Mendelian_genes.txt        # ClinVar P/LP broad Mendelian genes
