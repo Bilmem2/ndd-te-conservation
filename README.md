@@ -203,7 +203,7 @@ cd ndd-te-conservation
 conda env create -f environment.yml
 conda activate bio_master
 
-# 3. Download raw genomes, GTF, and RepeatMasker tracks (multi-GB; not in the repo)
+# 3. Download raw genomes, GTF, and RepeatMasker tracks (not in the repo)
 bash scripts/00_download_data.sh
 
 # 4. Run the analysis in the order below.
@@ -253,7 +253,3 @@ python scripts/13_ortholog_analysis.py
 Scripts 06–08 (`07_pli_correlation.py`, `08_encode_overlap_v2.py`, and the preliminary `06_statistics.py`) contain exploratory analyses not included in the final manuscript but retained for completeness.
 
 ---
-
-## Citation
-
-Sevilmiş, C. (2026). Evolutionary Conservation of SINE and LINE-1 Depletion at NDD Gene Promoters Across Primates and Mammals. *Preprints*. DOI: [to be added upon submission]
