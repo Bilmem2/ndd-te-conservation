@@ -10,7 +10,7 @@ for SP in hg38 ponAbe3 nomLeu3 rheMac10 calJac4 mm10 canFam4; do
     OUT=$RESULTS/$SP
     mkdir -p $OUT
 
-    for CAT in HighConfNDD BroadNDD Housekeeping; do
+    for CAT in HighConfNDD Housekeeping; do
         PROM=$BASE/$SP/promoters/promoters_${CAT}.bed
 
         # LINE-1: tüm türler
@@ -27,4 +27,4 @@ for SP in hg38 ponAbe3 nomLeu3 rheMac10 calJac4 mm10 canFam4; do
     done
 done
 
-echo "=== TAMAMLANDI ==="
+echo "=== COMPLETED ==="
