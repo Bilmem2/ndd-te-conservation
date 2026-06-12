@@ -2,10 +2,12 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 import os
+from pathlib import Path
 
-DATA    = os.path.expanduser("~/comparative_TE_study/data")
+REPO_ROOT = Path(__file__).resolve().parent.parent
+DATA    = REPO_ROOT / "data"
 ORTHO   = f"{DATA}/orthologs"
-RESULTS = os.path.expanduser("~/comparative_TE_study/results")
+RESULTS = REPO_ROOT / "results"
 
 # Sembol tablosunu yükle
 sym_df = pd.read_csv(f"{ORTHO}/ensembl_to_symbol.tsv", sep='\t',

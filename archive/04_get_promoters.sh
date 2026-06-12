@@ -1,5 +1,9 @@
 #!/bin/bash
-BASE=~/comparative_TE_study/data
+# NOTE: Archived/exploratory — superseded by scripts/03_get_promoters.sh.
+# Retained for provenance only; not part of the main pipeline.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+BASE="$REPO_ROOT/data"
 WINDOW=2000
 
 echo "Promotor koordinatları çıkarılıyor (TSS ± ${WINDOW} bp, protein_coding only)..."

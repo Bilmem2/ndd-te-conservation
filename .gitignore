@@ -1,0 +1,24 @@
+# ── Downloaded raw data (large; fetched by scripts/00_download_data.sh) ──
+# Per-assembly genome/annotation/RepeatMasker dirs and their derived files.
+# Committed inputs (data/gene_lists/, data/orthologs/) are intentionally NOT ignored.
+data/hg38/
+data/ponAbe3/
+data/nomLeu3/
+data/rheMac10/
+data/calJac4/
+data/mm10/
+data/canFam4/
+
+# Manually-downloaded, registration-gated gene-set sources for 01_prepare_gene_lists.py
+data/sources/
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# ── OS / editor junk ──
+.DS_Store
+Thumbs.db
+*.swp

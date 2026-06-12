@@ -1,7 +1,9 @@
 #!/bin/bash
-BASE=~/comparative_TE_study/data
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+BASE="$REPO_ROOT/data"
 
-for SP in hg38 rheMac10 calJac4 mm10 ponAbe3 canFam4; do
+for SP in hg38 ponAbe3 nomLeu3 rheMac10 calJac4 mm10 canFam4; do
     echo "=== $SP ==="
     RMSK=$BASE/$SP/rmsk/rmsk.txt.gz
     OUT=$BASE/$SP/rmsk
@@ -17,7 +19,7 @@ for SP in hg38 rheMac10 calJac4 mm10 ponAbe3 canFam4; do
     echo "  LINE1: $(wc -l < $OUT/LINE1.bed) element"
 
     # Alu (primatlar: hg38, rheMac10, calJac4, ponAbe3)
-    if [[ "$SP" == "hg38" || "$SP" == "rheMac10" || "$SP" == "calJac4" || "$SP" == "ponAbe3" ]]; then
+    if [[ "$SP" == "hg38" || "$SP" == "ponAbe3" || "$SP" == "nomLeu3" || "$SP" == "rheMac10" || "$SP" == "calJac4" ]]; then
         awk 'NR>1 && $12=="SINE" && $13=="Alu" {
             printf "%s\t%d\t%d\t%s\n",$6,$7,$8,$11
         }' $RMSK_TXT | sort -k1,1 -k2,2n > $OUT/Alu.bed

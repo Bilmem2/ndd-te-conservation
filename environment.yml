@@ -1,0 +1,30 @@
+# Conda environment for the NDD TE-conservation analysis pipeline.
+#
+# Create with:
+#   conda env create -f environment.yml
+#   conda activate bio_master
+#
+# NOTE ON PINS: the versions below are a coherent, co-installable baseline
+# (Python 3.10 era, numpy < 2 for binary compatibility). If you have the
+# original analysis environment available, replace these with the exact
+# versions via `conda env export --no-builds` for byte-for-byte reproduction.
+#
+# SYSTEM DEPENDENCY (not installed here): BEDTools >= 2.31 must be on PATH —
+# see README "Requirements". RepeatMasker is NOT required: the pipeline parses
+# pre-computed UCSC RepeatMasker tracks (rmsk.txt.gz), it does not run RepeatMasker.
+
+name: bio_master
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.10
+  - pandas=2.2.2
+  - numpy=1.26.4
+  - scipy=1.13.1
+  - matplotlib=3.8.4
+  - seaborn=0.13.2
+  - tqdm=4.66.4
+  - requests=2.32.3

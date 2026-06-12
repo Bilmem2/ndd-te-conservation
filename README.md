@@ -2,7 +2,6 @@
 
 **Can Sevilmiş** | Department of Molecular Biology and Genetics, Bahçeşehir University, Istanbul, Turkey
 
-**Preprint:** [DOI to be added upon submission]  
 **Repository:** https://github.com/Bilmem2/ndd-te-conservation  
 **Related work:** Sevilmiş, C. (2026). LINE-1 Depletion at Promoters of Neurodevelopmental Disorder Genes: A Genome-Wide Analysis. *Preprints*. https://doi.org/10.20944/preprints202604.0715.v1
 
@@ -19,7 +18,8 @@ This repository contains all analysis scripts, processed gene lists, statistical
 ```
 .
 ├── scripts/
-│   ├── 01_prepare_gene_lists.py       # Curate NDD, BroadNDD, and Housekeeping gene sets
+│   ├── 00_download_data.sh            # Download genome GTF + RepeatMasker for all 7 assemblies
+│   ├── 01_prepare_gene_lists.py       # Curate NDD, BroadNDD, Housekeeping sets (manual sources; outputs committed)
 │   ├── 02_rmsk_to_bed.sh              # Extract Alu/LINE-1 BED files from RepeatMasker
 │   ├── 03_get_promoters.sh            # Extract TSS ± 2 kb promoter windows from GTF
 │   ├── 04_split_promoters.sh          # Split promoter BEDs by gene category
@@ -41,9 +41,10 @@ This repository contains all analysis scripts, processed gene lists, statistical
 │   │   ├── Cardiovascular_genes.txt   # ClinVar P/LP cardiovascular genes
 │   │   └── Mendelian_genes.txt        # ClinVar P/LP broad Mendelian genes
 │   │
-│   └── orthologs/
+│   └── orthologs/                     # Ensembl BioMart release 112 (committed; see "Ortholog mapping")
 │       ├── ensembl_to_symbol.tsv      # Ensembl ID ↔ HGNC symbol mapping
-│       └── symbol_to_ensembl.csv      # HGNC symbol ↔ Ensembl ID mapping
+│       ├── symbol_to_ensembl.csv      # HGNC symbol ↔ Ensembl ID mapping
+│       └── <assembly>_raw.tsv         # Per-species 1:1 ortholog tables (used by 13_ortholog_analysis.py)
 │
 ├── results/
 │   ├── statistics_final.csv           # Main results: symbol-based matching, all species
@@ -54,12 +55,18 @@ This repository contains all analysis scripts, processed gene lists, statistical
 │   └── cross_disease/
 │       └── cross_disease_results.csv  # Alu frequency: NDD vs cardiovascular vs Mendelian
 │
-└── figures/
-    ├── Fig1_Alu_Primates.pdf/.png     # Alu depletion across 5 primates
-    ├── Fig2_LINE1_Mammals.pdf/.png    # LINE-1 depletion across 7 mammals
-    ├── Fig3_Heatmap.pdf/.png          # Significance heatmap (species × TE class)
-    ├── Fig4_NullModel.pdf/.png        # Permutation null model validation
-    └── Fig5_CpG.pdf/.png             # CpG island confounder analysis
+├── figures/
+│   ├── Fig1_Alu_Primates.pdf/.png     # Alu depletion across 5 primates
+│   ├── Fig2_LINE1_Mammals.pdf/.png    # LINE-1 depletion across 7 mammals
+│   ├── Fig3_Heatmap.pdf/.png          # Significance heatmap (species × TE class)
+│   ├── Fig4_NullModel.pdf/.png        # Permutation null model validation
+│   └── Fig5_CpG.pdf/.png             # CpG island confounder analysis
+│
+├── archive/
+│   └── 04_get_promoters.sh            # Superseded exploratory variant of 03 (kept for provenance)
+│
+├── environment.yml                    # Conda environment (bio_master); pinned dependencies
+└── README.md
 ```
 
 ---
@@ -90,6 +97,23 @@ https://hgdownload.soe.ucsc.edu/goldenPath/{assembly}/database/rmsk.txt.gz
 
 Replace `{assembly}` with: `hg38`, `ponAbe3`, `nomLeu3`, `rheMac10`, `calJac4`, `mm10`, `canFam6`
 
+> **Note on the dog assembly folder.** The `data/canFam4/` and `results/canFam4/`
+> directories carry this name for historical reasons. The dog data they contain is in
+> fact **ROS_Cfam_1.0 (UCSC canFam6)**: the GTF is from Ensembl release 112 and the
+> RepeatMasker track from UCSC canFam6. The two are coordinate-compatible (they differ
+> only by the `chr` prefix, which the promoter script adds), so the folder name is
+> cosmetic only and is deliberately kept as-is to preserve every path reference in the
+> scripts and committed results.
+
+### Ortholog mapping
+
+The 1:1 ortholog tables in `data/orthologs/` — `ensembl_to_symbol.tsv`,
+`symbol_to_ensembl.csv`, and the per-species `<assembly>_raw.tsv` files consumed by
+[`13_ortholog_analysis.py`](scripts/13_ortholog_analysis.py) — were generated from
+**Ensembl BioMart (release 112)** and are committed directly to the repository. There is
+no automated fetch script on purpose: the BioMart service changes between releases, so
+shipping the exact tables used here is what makes the ortholog validation reproducible.
+
 ### Gene Set Sources
 
 | Dataset | Source |
@@ -106,27 +130,58 @@ Replace `{assembly}` with: `hg38`, `ponAbe3`, `nomLeu3`, `rheMac10`, `calJac4`, 
 
 ## Requirements
 
+Python dependencies are pinned in [`environment.yml`](environment.yml) (conda environment name `bio_master`):
+
+```bash
+conda env create -f environment.yml
+conda activate bio_master
 ```
-Python >= 3.10
-pandas
-scipy
-matplotlib
-seaborn
-tqdm
-requests
-bedtools >= 2.31
-```
+
+This provides Python 3.10 with pandas, numpy, scipy, matplotlib, seaborn, tqdm, and requests.
+
+**System dependency (install separately):**
+
+- **BEDTools ≥ 2.31** must be on your `PATH` — used by scripts 05 and 08–10, 12. Install via your package manager or `conda install -c bioconda bedtools`.
+
+> RepeatMasker itself is **not** required. The pipeline parses pre-computed UCSC
+> RepeatMasker tracks (`rmsk.txt.gz`); it never runs RepeatMasker locally.
 
 ---
 
 ## Reproducing the Analysis
 
-Scripts are provided for transparency and documentation purposes. Full reproduction requires downloading the raw genome assemblies and gene annotation files listed under Data Sources, and placing them in the directory structure described above. Absolute paths in scripts may require adjustment for local environments.
+All scripts resolve their paths **relative to the repository root** (via `BASH_SOURCE`
+in the shell scripts and `Path(__file__)` in the Python scripts), so the pipeline runs
+from a fresh clone on any machine — no path edits required.
 
-The analysis follows this sequence:
+### Quick start
 
 ```bash
-# 1. Prepare gene lists (SFARI, ClinGen, HPO, HRT Atlas)
+# 1. Clone
+git clone https://github.com/Bilmem2/ndd-te-conservation.git
+cd ndd-te-conservation
+
+# 2. Create and activate the conda environment
+conda env create -f environment.yml
+conda activate bio_master
+
+# 3. Download raw genomes, GTF, and RepeatMasker tracks (multi-GB; not in the repo)
+bash scripts/00_download_data.sh
+
+# 4. Run the analysis in the order below.
+```
+
+The committed `results/`, `data/gene_lists/`, and `data/orthologs/` mean you can
+regenerate **all statistics and figures** (steps 6–10 below) without the multi-GB
+downloads. `00_download_data.sh` and steps 2–5 are only needed to rebuild the
+intermediate promoter/TE BED files from scratch.
+
+### Pipeline
+
+```bash
+# 1. Prepare gene lists
+#    (SFARI, ClinGen, HPO, HRT Atlas, GTEx) placed in data/sources/. The outputs
+#    are already committed under data/gene_lists/, so this step can be skipped.
 python scripts/01_prepare_gene_lists.py
 
 # 2. Extract Alu and LINE-1 BED files from RepeatMasker annotations
@@ -161,6 +216,3 @@ Scripts 06–08 (`07_pli_correlation.py`, `08_encode_overlap_v2.py`, and the pre
 
 ---
 
-## Citation
-
-Sevilmiş, C. (2026). Evolutionary Conservation of SINE and LINE-1 Depletion at NDD Gene Promoters Across Primates and Mammals. *Preprints*. DOI: [to be added upon submission]

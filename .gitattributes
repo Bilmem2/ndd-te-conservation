@@ -1,0 +1,11 @@
+# Guarantee LF line endings so the pipeline runs on Linux/WSL regardless of the
+# committer's platform or core.autocrlf setting. Shell scripts in particular break
+# with CRLF (the shebang becomes "#!/bin/bash\r" -> "bad interpreter").
+*.sh    text eol=lf
+*.py    text eol=lf
+*.yml   text eol=lf
+
+# Binary assets — never normalize.
+*.png   binary
+*.pdf   binary
+*.gz    binary

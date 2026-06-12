@@ -1,9 +1,14 @@
 import pandas as pd
 import os
 import re
+from pathlib import Path
 
-sync = os.path.expanduser("~/synchronized_constraint/data")
-out_dir = "data/gene_lists"
+REPO_ROOT = Path(__file__).resolve().parent.parent
+# Raw gene-set source files — manual download required (registration-gated):
+# SFARI Gene, ClinGen Epilepsy, HPO term gene lists, HRT Atlas, GTEx brain TPM.
+# See README "Gene Set Sources". Place all source files under data/sources/.
+sync = REPO_ROOT / "data" / "sources"
+out_dir = REPO_ROOT / "data" / "gene_lists"
 os.makedirs(out_dir, exist_ok=True)
 
 # === 1. HIGH-CONFIDENCE NDD ===

@@ -3,9 +3,11 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 import os
+from pathlib import Path
 
-DATA = os.path.expanduser("~/comparative_TE_study/data")
-RESULTS = os.path.expanduser("~/comparative_TE_study/results")
+REPO_ROOT = Path(__file__).resolve().parent.parent
+DATA = REPO_ROOT / "data"
+RESULTS = REPO_ROOT / "results"
 os.makedirs(f"{RESULTS}/sensitivity", exist_ok=True)
 
 alu_bed = f"{DATA}/hg38/rmsk/Alu.bed"

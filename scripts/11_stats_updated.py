@@ -2,8 +2,10 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 import os
+from pathlib import Path
 
-RESULTS = os.path.expanduser("~/comparative_TE_study/results")
+REPO_ROOT = Path(__file__).resolve().parent.parent
+RESULTS = REPO_ROOT / "results"
 
 species = {
     "hg38":     {"label": "Human",     "mya": 0,  "alu": True},

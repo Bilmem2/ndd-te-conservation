@@ -1,8 +1,10 @@
 #!/bin/bash
-BASE=~/comparative_TE_study/data
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+BASE="$REPO_ROOT/data"
 LISTS=$BASE/gene_lists
 
-for SP in hg38 rheMac10 calJac4 mm10 ponAbe3 canFam4; do
+for SP in hg38 ponAbe3 nomLeu3 rheMac10 calJac4 mm10 canFam4; do
     echo "=== $SP ==="
     OUT=$BASE/$SP/promoters
     ALL=$OUT/promoters_all.bed

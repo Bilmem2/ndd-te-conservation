@@ -2,9 +2,11 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 import os
+from pathlib import Path
 
-RESULTS = os.path.expanduser("~/comparative_TE_study/results")
-DATA = os.path.expanduser("~/comparative_TE_study/data")
+REPO_ROOT = Path(__file__).resolve().parent.parent
+RESULTS = REPO_ROOT / "results"
+DATA = REPO_ROOT / "data"
 
 # === 1. gnomAD pLI yükle ===
 print("gnomAD constraint yükleniyor...")

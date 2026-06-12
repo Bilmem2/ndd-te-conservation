@@ -8,10 +8,12 @@ import seaborn as sns
 from scipy import stats
 import os, subprocess
 from io import StringIO
+from pathlib import Path
 
-RESULTS = os.path.expanduser("~/comparative_TE_study/results")
-DATA = os.path.expanduser("~/comparative_TE_study/data")
-FIGS = os.path.expanduser("~/comparative_TE_study/figures")
+REPO_ROOT = Path(__file__).resolve().parent.parent
+RESULTS = REPO_ROOT / "results"
+DATA = REPO_ROOT / "data"
+FIGS = REPO_ROOT / "figures"
 os.makedirs(FIGS, exist_ok=True)
 
 # Renk paleti

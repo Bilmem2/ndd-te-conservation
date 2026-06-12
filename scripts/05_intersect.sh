@@ -1,9 +1,11 @@
 #!/bin/bash
-BASE=~/comparative_TE_study/data
-RESULTS=~/comparative_TE_study/results
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+BASE="$REPO_ROOT/data"
+RESULTS="$REPO_ROOT/results"
 mkdir -p $RESULTS
 
-for SP in hg38 rheMac10 calJac4 mm10 ponAbe3 canFam4; do
+for SP in hg38 ponAbe3 nomLeu3 rheMac10 calJac4 mm10 canFam4; do
     echo "=== $SP ==="
     OUT=$RESULTS/$SP
     mkdir -p $OUT
