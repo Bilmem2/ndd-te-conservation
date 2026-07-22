@@ -9,7 +9,7 @@
 
 ## Overview
 
-This repository contains all analysis scripts, processed gene lists, statistical results, and figures for the above manuscript. Raw genome assemblies, RepeatMasker annotations, GTF files, and the hg38 reference FASTA are not included due to size constraints; download instructions are provided below.
+This repository contains all analysis scripts, processed gene lists, statistical results, and figures for the above manuscript. The analysis spans **eight mammalian genomes** — six primates (human, orangutan, gibbon, macaque, marmoset, and the strepsirrhine **gray mouse lemur, _Microcebus murinus_**) plus mouse and dog — and adds **genomic-context confounder controls** (local gene density, recombination rate, joint matched control), an **ENCODE cCRE functional overlay**, and a **fetal-brain regulatory-specificity test** (ENCODE fetal DNase-seq, three brain donors vs three non-neural fetal tissues). Raw genome assemblies, RepeatMasker annotations, GTF files, and the hg38 reference are not included due to size constraints; download instructions are provided below.
 
 ---
 
@@ -18,19 +18,37 @@ This repository contains all analysis scripts, processed gene lists, statistical
 ```
 .
 ├── scripts/
-│   ├── 01_prepare_gene_lists.py       # Curate NDD, BroadNDD, and Housekeeping gene sets
-│   ├── 02_rmsk_to_bed.sh              # Extract Alu/LINE-1 BED files from RepeatMasker
+│   │   # ── Manuscript pipeline ──
+│   ├── 01_prepare_gene_lists.py       # Curate NDD and Housekeeping gene sets
+│   ├── 02_rmsk_to_bed.sh              # Extract Alu/LINE-1/B1B2 BED from RepeatMasker
 │   ├── 03_get_promoters.sh            # Extract TSS ± 2 kb promoter windows from GTF
 │   ├── 04_split_promoters.sh          # Split promoter BEDs by gene category
 │   ├── 05_intersect.sh                # BEDTools intersect: TE count per promoter
-│   ├── 06_statistics.py               # Mann-Whitney U, effect sizes (preliminary)
-│   ├── 07_pli_correlation.py          # pLI vs Alu frequency correlation (exploratory)
-│   ├── 08_encode_overlap_v2.py        # ENCODE CTCF/DNase overlap analysis (exploratory)
-│   ├── 09_window_sensitivity.py       # Window size sensitivity analysis (± 0.5–3 kb)
-│   ├── 10_cross_disease.py            # Cross-disease specificity analysis (ClinVar)
-│   ├── 11_stats_updated.py            # Final statistics across all 7 species
-│   ├── 12_figures_final.py            # Generate all manuscript figures (Fig 1–5)
-│   └── 13_ortholog_analysis.py        # Ortholog-validated replication (Ensembl BioMart)
+│   ├── 09_window_sensitivity.py       # Window size sensitivity (± 0.5–3 kb)
+│   ├── 10_cross_disease.py            # Cross-disease specificity (ClinVar)
+│   ├── 11_stats_updated.py            # Cross-species statistics (7 species)
+│   ├── 12_figures_final.py            # Core figures (Fig 1–6)
+│   ├── 13_ortholog_analysis.py        # Ortholog-validated replication (Ensembl BioMart)
+│   ├── 15_context_controls.py         # Gene density + recombination controls (Fig 7)
+│   ├── 16_ccre_overlay.py             # ENCODE cCRE functional overlay (Fig 8)
+│   ├── 18_matched_control.py          # Joint GC + density + recombination matched control
+│   ├── 19_rebaseline.py              # Honest genome / expression-matched re-baselining
+│   ├── 20_lemur.py                    # Mouse lemur (strepsirrhine) Alu depletion
+│   ├── 21_lemur_ortholog.py           # Mouse lemur ortholog validation (BioMart)
+│   ├── 22_consolidate.py              # Master cross-species table + results backbone
+│   ├── 23_brain_overlay.py            # Fetal-brain DNase regulatory-specificity overlay (Fig 9)
+│   ├── fig_lemur_update.py            # Regenerate Fig 1 & 3 with mouse lemur
+│   ├── fig_new.py                     # Generate Fig 7 (context) & Fig 8 (cCRE)
+│   ├── fig_brain.py                   # Generate Fig 9 (fetal-brain specificity)
+│   │
+│   │   # ── Exploratory — NOT used as evidence in the manuscript (retained for provenance) ──
+│   ├── 06_statistics.py               # Preliminary statistics
+│   ├── 07_pli_correlation.py          # pLI vs Alu density
+│   ├── 08_encode_overlap_v2.py        # CTCF/DNase overlap
+│   ├── 14_gnomad_mei.py               # gnomAD polymorphic MEI: targeting-vs-selection (inconclusive)
+│   ├── 17_functional_consequence.py   # gnomAD constraint / GTEx expression vs Alu (inconclusive)
+│   ├── probe_dosage.py                # Dosage-sensitivity continuum probe (did not hold)
+│   └── probe_subfamily.py             # Alu subfamily-age (AluJ/S/Y) probe (inconclusive)
 │
 ├── data/
 │   ├── gene_lists/
@@ -73,6 +91,11 @@ This repository contains all analysis scripts, processed gene lists, statistical
 │   │   ├── Housekeeping_Alu.bed
 │   │   ├── HighConfNDD_LINE1.bed
 │   │   └── Housekeeping_LINE1.bed
+│   ├── mmur3/                      # Mouse lemur (strepsirrhine, ~70 Mya; Alu only)
+│   │   ├── HighConfNDD_Alu.bed
+│   │   ├── Housekeeping_Alu.bed
+│   │   ├── lemur_stats.csv
+│   │   └── lemur_ortholog_validation.csv
 │   ├── mm10/                       # Mouse (B1/B2 SINE analogs of primate Alu + LINE-1)
 │   │   ├── HighConfNDD_B1B2.bed
 │   │   ├── Housekeeping_B1B2.bed
@@ -91,17 +114,28 @@ This repository contains all analysis scripts, processed gene lists, statistical
 │   │   ├── Housekeeping_w2000.bed
 │   │   ├── Housekeeping_w3000.bed
 │   │   └── window_sensitivity.csv
-│   └── cross_disease/
-│       ├── Cardiovascular_promoters.bed
-│       ├── Mendelian_promoters.bed
-│       └── cross_disease_results.csv
+│   ├── cross_disease/
+│   │   ├── Cardiovascular_promoters.bed
+│   │   ├── Mendelian_promoters.bed
+│   │   └── cross_disease_results.csv
+│   ├── context/                    # Gene density + recombination controls (Fig 7)
+│   ├── ccre/                       # ENCODE cCRE functional overlay (Fig 8)
+│   ├── brain/                      # Fetal-brain DNase specificity overlay (Fig 9)
+│   ├── matched/                    # Matched control + honest re-baselining
+│   ├── consolidated/              # Master cross-species table + RESULTS_BACKBONE.md
+│   ├── functional/                 # Exploratory constraint/expression + subfamily probes
+│   └── gnomad_mei/                 # Exploratory polymorphic-MEI decomposition
 │
 └── figures/
-    ├── Fig1_Alu_Primates.pdf/.png     # Alu depletion across 5 primates
+    ├── Fig1_Alu_Primates.pdf/.png     # Alu depletion across 6 primates (incl. mouse lemur)
     ├── Fig2_LINE1_Mammals.pdf/.png    # LINE-1 depletion across 7 mammals
-    ├── Fig3_Heatmap.pdf/.png          # Significance heatmap (species × TE class)
+    ├── Fig3_Heatmap.pdf/.png          # Significance heatmap (8 species × TE class)
     ├── Fig4_NullModel.pdf/.png        # Permutation null model validation
-    └── Fig5_CpG.pdf/.png             # CpG island confounder analysis
+    ├── Fig5_CpG.pdf/.png              # CpG island confounder analysis
+    ├── Fig6_GC_Analysis.pdf/.png      # Promoter GC content analysis
+    ├── Fig7_ContextControls.pdf/.png  # Gene density + recombination + matched control
+    ├── Fig8_cCRE.pdf/.png             # ENCODE cCRE functional overlay
+    └── Fig9_BrainSpecificity.pdf/.png # Fetal-brain regulatory specificity (DNase-seq)
 ```
 
 ---
@@ -119,6 +153,7 @@ Raw data files must be downloaded separately. The following sources were used:
 | Gibbon | nomLeu3, Ensembl 112 | https://ftp.ensembl.org/pub/release-112/gtf/nomascus_leucogenys/ |
 | Macaque | rheMac10, Ensembl 112 | https://ftp.ensembl.org/pub/release-112/gtf/macaca_mulatta/ |
 | Marmoset | calJac4, Ensembl 112 | https://ftp.ensembl.org/pub/release-112/gtf/callithrix_jacchus/ |
+| Mouse lemur | Mmur_3.0, Ensembl 112 | https://ftp.ensembl.org/pub/release-112/gtf/microcebus_murinus/ |
 | Mouse | mm10, GENCODE vM25 | https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M25/ |
 | Dog | canFam6, Ensembl 112 | https://ftp.ensembl.org/pub/release-112/gtf/canis_lupus_familiaris/ |
 
@@ -131,6 +166,14 @@ https://hgdownload.soe.ucsc.edu/goldenPath/{assembly}/database/rmsk.txt.gz
 ```
 
 Replace `{assembly}` with: `hg38`, `ponAbe3`, `nomLeu3`, `rheMac10`, `calJac4`, `mm10`, `canFam6`
+
+The **mouse lemur** RepeatMasker track (`SINE/Alu`) is instead taken from the UCSC
+**GenArk** assembly hub (`GCF_000165445.2`, Mmur_3.0); its RefSeq sequence names are
+mapped onto the Ensembl GTF names via the hub's `chromAlias.txt`:
+
+```
+https://hgdownload.soe.ucsc.edu/hubs/GCF/000/165/445/GCF_000165445.2/
+```
 
 > **Note on the dog assembly folder.** The `data/canFam4/` and `results/canFam4/`
 > directories carry this name for historical reasons. The dog data they contain is in
@@ -161,7 +204,12 @@ shipping the exact tables used here is what makes the ortholog validation reprod
 | gnomAD v4.1 constraint | https://gnomad.broadinstitute.org |
 | ClinVar variant summary | https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/ |
 | hg38 CpG islands | https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cpgIslandExt.txt.gz |
-| hg38 reference genome | https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.fa.gz |
+| hg38 reference genome / 2bit | https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.2bit |
+| ENCODE SCREEN cCRE registry (GRCh38) | https://downloads.wenglab.org/Registry-V4/GRCh38-cCREs.bed |
+| ENCODE fetal DNase-seq peaks (GRCh38) | https://www.encodeproject.org — brain: ENCFF955AQD, ENCFF631TDE, ENCFF670PXX; non-neural: ENCFF667IEN (liver), ENCFF362PZG (lung), ENCFF016LYI (stomach) |
+| Recombination map (GRCh38, deCODE-derived) | https://bochet.gcc.biostat.washington.edu/beagle/genetic_maps/ |
+| GTEx v8 median TPM by tissue | https://gtexportal.org |
+| gnomAD v4.1 SV mobile-element insertions | https://gnomad.broadinstitute.org *(exploratory only)* |
 
 ---
 
@@ -174,11 +222,11 @@ conda env create -f environment.yml
 conda activate bio_master
 ```
 
-This provides Python 3.10 with pandas, numpy, scipy, matplotlib, seaborn, tqdm, and requests.
+This provides Python 3.10 with pandas, numpy, scipy, matplotlib, seaborn, tqdm, and requests. The revision-stage scripts additionally use **twobitreader** (promoter GC from `hg38.2bit`) and **tabulate** (used by `22_consolidate.py`).
 
 **System dependency (install separately):**
 
-- **BEDTools ≥ 2.31** must be on your `PATH` — used by scripts 05 and 08–10, 12. Install via your package manager or `conda install -c bioconda bedtools`.
+- **BEDTools ≥ 2.31** — used by the original scripts 05 and 08–10, 12. The revision-stage scripts (14–23, `fig_*`, `probe_*`) compute all interval overlaps with pure-Python (NumPy) routines and do **not** require BEDTools.
 
 > RepeatMasker itself is **not** required. The pipeline parses pre-computed UCSC
 > RepeatMasker tracks (`rmsk.txt.gz`); it never runs RepeatMasker locally.
@@ -227,7 +275,7 @@ bash scripts/02_rmsk_to_bed.sh
 # 3. Extract TSS ± 2 kb promoter windows from GTF files
 bash scripts/03_get_promoters.sh
 
-# 4. Split promoter BEDs by gene category (HighConfNDD, BroadNDD, Housekeeping)
+# 4. Split promoter BEDs by gene category (HighConfNDD, Housekeeping)
 bash scripts/04_split_promoters.sh
 
 # 5. Count TE overlaps per promoter window (BEDTools intersect)
@@ -242,13 +290,43 @@ python scripts/10_cross_disease.py
 # 8. Final statistics across all 7 species (including mouse B1/B2)
 python scripts/11_stats_updated.py
 
-# 9. Generate manuscript figures (Fig 1–6)
+# 9. Generate core figures (Fig 1–6)
 python scripts/12_figures_final.py
 
 # 10. Ortholog-validated replication (Ensembl BioMart 1:1)
 python scripts/13_ortholog_analysis.py
+
+# 11. Genomic-context controls: gene density + recombination (Fig 7 data)
+python scripts/15_context_controls.py
+
+# 12. ENCODE cCRE functional overlay (Fig 8 data)
+python scripts/16_ccre_overlay.py
+
+# 12b. Fetal-brain DNase regulatory-specificity overlay (Fig 9 data)
+python scripts/23_brain_overlay.py
+
+# 13. Joint matched control + honest re-baselining
+python scripts/18_matched_control.py
+python scripts/19_rebaseline.py
+
+# 14. Mouse lemur (strepsirrhine) Alu depletion + ortholog validation
+python scripts/20_lemur.py
+python scripts/21_lemur_ortholog.py
+
+# 15. Regenerate Fig 1 & 3 (with lemur), and build Fig 7, 8 & 9
+python scripts/fig_lemur_update.py
+python scripts/fig_new.py
+python scripts/fig_brain.py
+
+# 16. Consolidate all results into the master cross-species table + backbone
+python scripts/22_consolidate.py
 ```
 
-Scripts 06–08 (`07_pli_correlation.py`, `08_encode_overlap_v2.py`, and the preliminary `06_statistics.py`) contain exploratory analyses not included in the final manuscript but retained for completeness.
+The remaining scripts — `06_statistics.py` (preliminary), `07_pli_correlation.py`,
+`08_encode_overlap_v2.py`, `14_gnomad_mei.py`, `17_functional_consequence.py`,
+`probe_dosage.py`, and `probe_subfamily.py` — contain **exploratory analyses that are
+not used as evidence in the manuscript** (the polymorphic-MEI targeting-vs-selection
+decomposition and the Alu subfamily-age probe are mentioned in the Discussion only as
+inconclusive). They are retained for provenance and full transparency.
 
 ---

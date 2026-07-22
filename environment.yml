@@ -28,3 +28,7 @@ dependencies:
   - seaborn=0.13.2
   - tqdm=4.66.4
   - requests=2.32.3
+  - tabulate=0.9.0            # 22_consolidate.py (Markdown tables)
+  - pip
+  - pip:
+      - twobitreader==3.1.7   # promoter GC from hg38.2bit (18/19_*.py)

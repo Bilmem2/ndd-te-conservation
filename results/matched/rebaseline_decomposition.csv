@@ -1,0 +1,3 @@
+reference,fixed_NDD,fixed_ratio,fixed_CI,poly_NDD,poly_ratio,poly_CI
+GENOME (all PC genes),0.377,0.773,"('—', '—')",0.0488,1.007,"('—', '—')"
+MATCHED non-disease control,0.377,0.817,"(np.float64(0.738), np.float64(0.904))",0.0488,1.089,"(np.float64(0.882), np.float64(1.333))"

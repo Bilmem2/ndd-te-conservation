@@ -1,0 +1,4 @@
+covariate,NDD_mean,HK_all_mean,HK_matched_mean,SMD_before,SMD_after
+gc,0.5174,0.5169,0.5177,0.008,-0.004
+gene_density,13.1949,18.9591,15.3222,-0.427,-0.162
+recomb_cM_Mb,1.2733,0.9636,1.1383,0.237,0.101
