@@ -18,37 +18,36 @@ This repository contains all analysis scripts, processed gene lists, statistical
 ```
 .
 ├── scripts/
-│   │   # ── Manuscript pipeline ──
+│   │   # Numbered 01-23 in pipeline order. Scripts tagged (exploratory) are retained
+│   │   # for provenance and are NOT used as evidence in the manuscript.
 │   ├── 01_prepare_gene_lists.py       # Curate NDD and Housekeeping gene sets
 │   ├── 02_rmsk_to_bed.sh              # Extract Alu/LINE-1/B1B2 BED from RepeatMasker
 │   ├── 03_get_promoters.sh            # Extract TSS ± 2 kb promoter windows from GTF
 │   ├── 04_split_promoters.sh          # Split promoter BEDs by gene category
 │   ├── 05_intersect.sh                # BEDTools intersect: TE count per promoter
+│   ├── 06_statistics.py               # (exploratory) preliminary statistics
+│   ├── 07_pli_correlation.py          # (exploratory) pLI vs Alu density
+│   ├── 08_encode_overlap_v2.py        # (exploratory) CTCF/DNase overlap
 │   ├── 09_window_sensitivity.py       # Window size sensitivity (± 0.5–3 kb)
 │   ├── 10_cross_disease.py            # Cross-disease specificity (ClinVar)
 │   ├── 11_stats_updated.py            # Cross-species statistics (7 species)
 │   ├── 12_figures_final.py            # Core figures (Fig 1–6)
 │   ├── 13_ortholog_analysis.py        # Ortholog-validated replication (Ensembl BioMart)
+│   ├── 14_gnomad_mei.py               # (exploratory) gnomAD polymorphic MEI decomposition (inconclusive)
 │   ├── 15_context_controls.py         # Gene density + recombination controls (Fig 7)
 │   ├── 16_ccre_overlay.py             # ENCODE cCRE functional overlay (Fig 8)
+│   ├── 17_functional_consequence.py   # (exploratory) gnomAD constraint / GTEx expression vs Alu (inconclusive)
 │   ├── 18_matched_control.py          # Joint GC + density + recombination matched control
-│   ├── 19_rebaseline.py              # Honest genome / expression-matched re-baselining
+│   ├── 19_rebaseline.py               # Honest genome / expression-matched re-baselining
 │   ├── 20_lemur.py                    # Mouse lemur (strepsirrhine) Alu depletion
 │   ├── 21_lemur_ortholog.py           # Mouse lemur ortholog validation (BioMart)
 │   ├── 22_consolidate.py              # Master cross-species table + results backbone
 │   ├── 23_brain_overlay.py            # Fetal-brain DNase regulatory-specificity overlay (Fig 9)
+│   ├── probe_dosage.py                # (exploratory) dosage-sensitivity continuum probe (did not hold)
+│   ├── probe_subfamily.py             # (exploratory) Alu subfamily-age (AluJ/S/Y) probe (inconclusive)
 │   ├── fig_lemur_update.py            # Regenerate Fig 1 & 3 with mouse lemur
 │   ├── fig_new.py                     # Generate Fig 7 (context) & Fig 8 (cCRE)
-│   ├── fig_brain.py                   # Generate Fig 9 (fetal-brain specificity)
-│   │
-│   │   # ── Exploratory — NOT used as evidence in the manuscript (retained for provenance) ──
-│   ├── 06_statistics.py               # Preliminary statistics
-│   ├── 07_pli_correlation.py          # pLI vs Alu density
-│   ├── 08_encode_overlap_v2.py        # CTCF/DNase overlap
-│   ├── 14_gnomad_mei.py               # gnomAD polymorphic MEI: targeting-vs-selection (inconclusive)
-│   ├── 17_functional_consequence.py   # gnomAD constraint / GTEx expression vs Alu (inconclusive)
-│   ├── probe_dosage.py                # Dosage-sensitivity continuum probe (did not hold)
-│   └── probe_subfamily.py             # Alu subfamily-age (AluJ/S/Y) probe (inconclusive)
+│   └── fig_brain.py                   # Generate Fig 9 (fetal-brain specificity)
 │
 ├── data/
 │   ├── gene_lists/
