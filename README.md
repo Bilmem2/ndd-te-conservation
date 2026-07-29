@@ -44,6 +44,7 @@ This repository contains all analysis scripts, processed gene lists, statistical
 │   ├── 22_consolidate.py              # Master cross-species table + results backbone
 │   ├── 23_brain_overlay.py            # Fetal-brain DNase regulatory-specificity overlay (Fig 9)
 │   ├── 24_null_model.py               # Permutation null model, all 5 species-TE combos
+│   ├── 25_genome_baseline.py          # Within-species genome baseline, all species (Table 2)
 │   ├── probe_dosage.py                # (exploratory) dosage-sensitivity continuum probe (did not hold)
 │   ├── probe_subfamily.py             # (exploratory) Alu subfamily-age (AluJ/S/Y) probe (inconclusive)
 │   ├── fig_lemur_update.py            # Regenerate Fig 1 & 3 with mouse lemur
@@ -316,6 +317,10 @@ python scripts/21_lemur_ortholog.py
 
 # 15. Permutation null model across all five species-TE combinations (Fig 4 data)
 python scripts/24_null_model.py
+
+# 15b. Within-species genome baseline for every species (Table 2).
+#      Needs the raw GTF + RepeatMasker tracks from 00_download_data.sh.
+python scripts/25_genome_baseline.py
 
 # 16. Regenerate Fig 1 & 3 (with lemur) and Fig 4 (5-panel null), build Fig 7, 8 & 9
 python scripts/fig_lemur_update.py
