@@ -6,15 +6,16 @@ _Auto-generated consolidation of all final analyses. Honest, re-baselined number
 
 SINE = Alu in primates, B1/B2 in mouse. One-sided Mann-Whitney U (HK>NDD), rank-biserial r. **Mouse lemur (strepsirrhine, ~70 My) is new; ortholog-validated |delta r|=0.001.**
 
-| species    |   mya | TE   |   n_HK |   n_NDD |   median_HK |   median_NDD |     p_value |      r | sig   |
-|:-----------|------:|:-----|-------:|--------:|------------:|-------------:|------------:|-------:|:------|
-| Human      |     0 | Alu  |   1714 |    1025 |        0.5  |         0.25 | 1.26854e-53 | -0.345 | ***   |
-| Orangutan  |    16 | Alu  |   1442 |     910 |        0.5  |         0.25 | 5.11472e-53 | -0.367 | ***   |
-| Gibbon     |    20 | Alu  |   1280 |     823 |        0.5  |         0.25 | 7.45258e-31 | -0.291 | ***   |
-| Macaque    |    25 | Alu  |   1533 |     949 |        0.5  |         0.25 | 1.08478e-60 | -0.384 | ***   |
-| Marmoset   |    40 | Alu  |   1340 |     908 |        0.5  |         0.5  | 9.01879e-10 | -0.147 | ***   |
-| MouseLemur |    70 | Alu  |   1324 |     899 |        0.25 |         0    | 2.70443e-29 | -0.262 | ***   |
-| Mouse      |    90 | B1B2 |   1605 |     960 |        0.75 |         0.25 | 1.00897e-70 | -0.413 | ***   |
+| species        |   mya | TE   |   n_HK |   n_NDD |   median_HK |   median_NDD |     p_value |      r | sig   |
+|:---------------|------:|:-----|-------:|--------:|------------:|-------------:|------------:|-------:|:------|
+| Human          |     0 | Alu  |   1714 |    1025 |        0.5  |         0.25 | 1.26854e-53 | -0.345 | ***   |
+| Orangutan      |    16 | Alu  |   1442 |     910 |        0.5  |         0.25 | 5.11472e-53 | -0.367 | ***   |
+| Gibbon         |    20 | Alu  |   1280 |     823 |        0.5  |         0.25 | 7.45258e-31 | -0.291 | ***   |
+| Macaque        |    25 | Alu  |   1533 |     949 |        0.5  |         0.25 | 1.08478e-60 | -0.384 | ***   |
+| Marmoset       |    40 | Alu  |   1340 |     908 |        0.5  |         0.5  | 9.01879e-10 | -0.147 | ***   |
+| SquirrelMonkey |    40 | Alu  |   1307 |     897 |        0.5  |         0.25 | 6.81731e-44 | -0.341 | ***   |
+| MouseLemur     |    70 | Alu  |   1324 |     899 |        0.25 |         0    | 2.70443e-29 | -0.262 | ***   |
+| Mouse          |    90 | B1B2 |   1605 |     960 |        0.75 |         0.25 | 1.00897e-70 | -0.413 | ***   |
 
 ## 2. LINE-1 (internal contrast: weak, lineage-variable)
 

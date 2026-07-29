@@ -112,7 +112,7 @@ def main():
     pd.set_option("display.max_columns", 20)
     print("\n=== Mouse SINE depletion by family ===")
     print(out.to_string(index=False))
-    print("\n=== Benjamini-Hochberg q-values over the 14 primary tests ===")
+    print("\n=== Benjamini-Hochberg q-values over the primary species-TE tests ===")
     print(tab[["species", "TE", "p_value", "q_value_BH", "r"]].to_string(index=False))
 
 

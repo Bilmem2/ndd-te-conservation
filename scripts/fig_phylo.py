@@ -20,7 +20,7 @@ plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 11})
 
 df = pd.read_csv(REPO / "results" / "consolidated" / "cross_species.csv")
 sine = df[df["TE"].isin(["Alu", "B1B2"])].copy()
-sine["label"] = sine["species"].replace({"MouseLemur": "Mouse lemur"})
+sine["label"] = sine["species"].replace({"MouseLemur": "Mouse lemur", "SquirrelMonkey": "Squirrel monkey"})
 
 prim = sine[sine["TE"] == "Alu"]
 rod = sine[sine["TE"] == "B1B2"]

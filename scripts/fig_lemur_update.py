@@ -35,16 +35,17 @@ def add_sig(ax, x1, x2, y, p):
     ax.text((x1 + x2) / 2, y * 1.01, sigstars(p), ha="center", va="bottom", fontsize=10)
 
 
-# ---------------- FIG 1: Alu across 6 primates (lemur added) ----------------
+# ------- FIG 1: Alu across 7 primates (two Platyrrhini + a strepsirrhine) -------
 primates = [
     ("hg38", "Human\n(hg38)", 0),
     ("ponAbe3", "Orangutan\n(ponAbe3)", 16),
     ("nomLeu3", "Gibbon\n(nomLeu3)", 20),
     ("rheMac10", "Macaque\n(rheMac10)", 25),
     ("calJac4", "Marmoset\n(calJac4)", 40),
+    ("saiBol1", "Squirrel monkey\n(SaiBol1.0)", 40),
     ("mmur3", "Mouse lemur\n(Mmur_3.0)", 70),
 ]
-fig, axes = plt.subplots(1, 6, figsize=(21, 6))
+fig, axes = plt.subplots(1, len(primates), figsize=(3.5 * len(primates), 6))
 for ax, (sp, label, mya) in zip(axes, primates):
     hk = dens(f"{RES}/{sp}/Housekeeping_Alu.bed")
     nd = dens(f"{RES}/{sp}/HighConfNDD_Alu.bed")
@@ -74,12 +75,13 @@ plt.tight_layout(rect=[0, 0.05, 1, 0.95])
 plt.savefig(f"{FIGS}/Fig1_Alu_Primates.pdf", dpi=300, bbox_inches="tight")
 plt.savefig(f"{FIGS}/Fig1_Alu_Primates.png", dpi=150, bbox_inches="tight")
 plt.close()
-print("Fig1 (6 primates incl. lemur) saved.")
+print("Fig1 (7 primates incl. two Platyrrhini and a strepsirrhine) saved.")
 
 # ---------------- FIG 3: heatmap with lemur row ----------------
 sp_info = [
     ("hg38", "Human"), ("ponAbe3", "Orangutan"), ("nomLeu3", "Gibbon"),
-    ("rheMac10", "Macaque"), ("calJac4", "Marmoset"), ("mmur3", "Mouse lemur"),
+    ("rheMac10", "Macaque"), ("calJac4", "Marmoset"),
+    ("saiBol1", "Squirrel monkey"), ("mmur3", "Mouse lemur"),
     ("mm10", "Mouse"), ("canFam4", "Dog"),
 ]
 n = len(sp_info)
@@ -118,4 +120,4 @@ plt.tight_layout()
 plt.savefig(f"{FIGS}/Fig3_Heatmap.pdf", dpi=300, bbox_inches="tight")
 plt.savefig(f"{FIGS}/Fig3_Heatmap.png", dpi=150, bbox_inches="tight")
 plt.close()
-print("Fig3 (8 species incl. lemur) saved.")
+print("Fig3 (9 species) saved.")

@@ -1,4 +1,4 @@
-# Evolutionary Conservation of SINE and LINE-1 Depletion at NDD Gene Promoters Across Primates and Mammals
+# Conserved SINE and Lineage-Variable LINE-1 Depletion at NDD Gene Promoters Across Primates and Mammals
 
 **Can Sevilmiş** | Department of Molecular Biology and Genetics, Bahçeşehir University, Istanbul, Turkey
 
@@ -9,7 +9,7 @@
 
 ## Overview
 
-This repository contains all analysis scripts, processed gene lists, statistical results, and figures for the above manuscript. The analysis spans **eight mammalian genomes** — six primates (human, orangutan, gibbon, macaque, marmoset, and the strepsirrhine **gray mouse lemur, _Microcebus murinus_**) plus mouse and dog — and adds **genomic-context confounder controls** (local gene density, recombination rate, joint matched control), an **ENCODE cCRE functional overlay**, and a **fetal-brain regulatory-specificity test** (ENCODE fetal DNase-seq, three brain donors vs three non-neural fetal tissues). Raw genome assemblies, RepeatMasker annotations, GTF files, and the hg38 reference are not included due to size constraints; download instructions are provided below.
+This repository contains all analysis scripts, processed gene lists, statistical results, and figures for the above manuscript. The analysis spans **nine mammalian genomes** — seven primates (human, orangutan, gibbon, macaque, two New World monkeys — marmoset and **squirrel monkey, _Saimiri boliviensis_** — and the strepsirrhine **gray mouse lemur, _Microcebus murinus_**) plus mouse and dog — and adds **genomic-context confounder controls** (local gene density, recombination rate, joint matched control), an **ENCODE cCRE functional overlay**, and a **fetal-brain regulatory-specificity test** (ENCODE fetal DNase-seq, three brain donors vs three non-neural fetal tissues). Raw genome assemblies, RepeatMasker annotations, GTF files, and the hg38 reference are not included due to size constraints; download instructions are provided below.
 
 ---
 
@@ -18,7 +18,7 @@ This repository contains all analysis scripts, processed gene lists, statistical
 ```
 .
 ├── scripts/
-│   │   # Numbered 01-23 in pipeline order. Scripts tagged (exploratory) are retained
+│   │   # Numbered 01-30 in pipeline order. Scripts tagged (exploratory) are retained
 │   │   # for provenance and are NOT used as evidence in the manuscript.
 │   ├── 01_prepare_gene_lists.py       # Curate NDD and Housekeeping gene sets
 │   ├── 02_rmsk_to_bed.sh              # Extract Alu/LINE-1/B1B2 BED from RepeatMasker
@@ -49,9 +49,10 @@ This repository contains all analysis scripts, processed gene lists, statistical
 │   ├── 27_constraint_matched.py       # LOEUF + brain-expression + GC matched control
 │   ├── 28_mane_tss.py                 # Canonical (MANE Select) TSS sensitivity analysis
 │   ├── 29_b1_b2_split.py              # Mouse B1 vs B2 separately + BH q-values for Table 1
+│   ├── 30_squirrel_monkey.py          # Second Platyrrhine (Saimiri boliviensis)
 │   ├── probe_dosage.py                # (exploratory) dosage-sensitivity continuum probe (did not hold)
 │   ├── probe_subfamily.py             # (exploratory) Alu subfamily-age (AluJ/S/Y) probe (inconclusive)
-│   ├── fig_lemur_update.py            # Regenerate Fig 1 & 3 with mouse lemur
+│   ├── fig_lemur_update.py            # Regenerate Fig 1 (7 primates) & Fig 3 (9 species)
 │   ├── fig_new.py                     # Generate Fig 7 (context) & Fig 8 (cCRE)
 │   ├── fig_brain.py                   # Generate Fig 9 (fetal-brain specificity)
 │   ├── fig_null_update.py             # Regenerate Fig 4 (5-panel permutation null model)
@@ -98,6 +99,10 @@ This repository contains all analysis scripts, processed gene lists, statistical
 │   │   ├── Housekeeping_Alu.bed
 │   │   ├── HighConfNDD_LINE1.bed
 │   │   └── Housekeeping_LINE1.bed
+│   ├── saiBol1/                    # Squirrel monkey (2nd Platyrrhine; Alu only)
+│   │   ├── HighConfNDD_Alu.bed
+│   │   ├── Housekeeping_Alu.bed
+│   │   └── squirrel_stats.csv
 │   ├── mmur3/                      # Mouse lemur (strepsirrhine, ~70 Mya; Alu only)
 │   │   ├── HighConfNDD_Alu.bed
 │   │   ├── Housekeeping_Alu.bed
@@ -163,6 +168,7 @@ Raw data files must be downloaded separately. The following sources were used:
 | Gibbon | nomLeu3, Ensembl 112 | https://ftp.ensembl.org/pub/release-112/gtf/nomascus_leucogenys/ |
 | Macaque | rheMac10, Ensembl 112 | https://ftp.ensembl.org/pub/release-112/gtf/macaca_mulatta/ |
 | Marmoset | calJac4, Ensembl 112 | https://ftp.ensembl.org/pub/release-112/gtf/callithrix_jacchus/ |
+| Squirrel monkey | SaiBol1.0, Ensembl 112 | https://ftp.ensembl.org/pub/release-112/gtf/saimiri_boliviensis_boliviensis/ |
 | Mouse lemur | Mmur_3.0, Ensembl 112 | https://ftp.ensembl.org/pub/release-112/gtf/microcebus_murinus/ |
 | Mouse | mm10, GENCODE vM25 | https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M25/ |
 | Dog | canFam6, Ensembl 112 | https://ftp.ensembl.org/pub/release-112/gtf/canis_lupus_familiaris/ |
@@ -338,6 +344,9 @@ python scripts/25_genome_baseline.py
 python scripts/27_constraint_matched.py
 python scripts/28_mane_tss.py
 python scripts/29_b1_b2_split.py
+
+# 15d. Second Platyrrhine, resolving whether the marmoset result is species-specific
+python scripts/30_squirrel_monkey.py
 
 # 16. Regenerate Fig 1 & 3 (with lemur) and Fig 4 (5-panel null), build Fig 7, 8 & 9
 python scripts/fig_lemur_update.py

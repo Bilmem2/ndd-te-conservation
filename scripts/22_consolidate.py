@@ -36,13 +36,25 @@ def mouse_b1b2():
                 p_value=p, r=round(r, 3), sig=sig)
 
 
+def squirrel_monkey():
+    """Second Platyrrhine (Saimiri boliviensis); columns renamed to the master schema."""
+    s = pd.read_csv(R / "saiBol1" / "squirrel_stats.csv").iloc[0]
+    p = float(s["p_vs_HK"])
+    return dict(species="SquirrelMonkey", mya=int(s["mya"]), TE="Alu",
+                n_HK=int(s["n_HK"]), n_NDD=int(s["n_NDD"]),
+                median_HK=float(s["median_HK"]), median_NDD=float(s["median_NDD"]),
+                p_value=p, r=float(s["r_vs_HK"]),
+                sig="***" if p < 1e-3 else "**" if p < 1e-2 else "*" if p < 0.05 else "ns")
+
+
 def cross_species():
     base = pd.read_csv(R / "statistics_final.csv")
     lem = pd.read_csv(R / "mmur3" / "lemur_stats.csv")
     lem = lem.rename(columns={"species": "species"})[COLS]
     lem["species"] = "MouseLemur"
     b1b2 = pd.DataFrame([mouse_b1b2()])[COLS]
-    full = pd.concat([base[COLS], lem[COLS], b1b2], ignore_index=True)
+    sq = pd.DataFrame([squirrel_monkey()])[COLS]
+    full = pd.concat([base[COLS], lem[COLS], sq, b1b2], ignore_index=True)
     order = {"Alu": 0, "B1B2": 0, "LINE1": 1}
     full["sec"] = full["TE"].map(lambda t: order.get(t, 2))
     full = full.sort_values(["sec", "mya"]).drop(columns="sec").reset_index(drop=True)

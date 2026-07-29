@@ -1,0 +1,2 @@
+species,assembly,mya,TE,n_all_PC,n_HK,n_NDD,median_HK,median_NDD,genome_mean_alu,r_vs_HK,p_vs_HK,NDD_over_genome,NDD_CI,HK_over_genome,HK_CI,p_NDD_below_genome
+SquirrelMonkey,SaiBol1.0,40,Alu,15158,1307,897,0.5,0.25,0.508,-0.341,6.817309427947516e-44,0.784,"[0.719, 0.844]",1.334,"[1.273, 1.395]",8.185894824821194e-16
