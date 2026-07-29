@@ -1,0 +1,2 @@
+comparison,n_NDD,n_control,median_alu_NDD,median_alu_control,mean_alu_NDD,mean_alu_control,NDD_over_genome,control_over_genome,r,p_value,housekeeping_genes_in_control
+NDD vs constraint+brain+GC matched control,914,914,0.25,0.25,0.388,0.466,0.784,0.942,-0.106,2.349744189436763e-05,139

@@ -1,0 +1,3 @@
+tss_definition,n_all_PC,n_NDD,n_HK,median_alu_NDD,median_alu_HK,NDD_over_genome,r,p_value
+gene-feature TSS (main analysis),20007,1009,1677,0.25,0.5,0.762,-0.349,5.724146935946939e-54
+MANE Select transcript TSS,19180,1008,1673,0.25,0.5,0.69,-0.402,4.0330864936776994e-71

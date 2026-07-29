@@ -1,0 +1,3 @@
+family,n_elements,n_HK,n_NDD,median_HK,median_NDD,r,p_value
+"B1 (SINE/Alu, 7SL-derived)",601652,1605,960,0.5,0.25,-0.386,5.356850426145272e-63
+"B2 (SINE/B2, tRNA-derived)",390816,1605,960,0.25,0.0,-0.254,2.5078991637099475e-32

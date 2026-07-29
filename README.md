@@ -46,6 +46,9 @@ This repository contains all analysis scripts, processed gene lists, statistical
 │   ├── 24_null_model.py               # Permutation null model, all 5 species-TE combos
 │   ├── 25_genome_baseline.py          # Within-species genome baseline, all species (Table 2)
 │   ├── 26_cross_disease_recompute.py  # Repaired ClinVar gene sets + genome-referenced comparison
+│   ├── 27_constraint_matched.py       # LOEUF + brain-expression + GC matched control
+│   ├── 28_mane_tss.py                 # Canonical (MANE Select) TSS sensitivity analysis
+│   ├── 29_b1_b2_split.py              # Mouse B1 vs B2 separately + BH q-values for Table 1
 │   ├── probe_dosage.py                # (exploratory) dosage-sensitivity continuum probe (did not hold)
 │   ├── probe_subfamily.py             # (exploratory) Alu subfamily-age (AluJ/S/Y) probe (inconclusive)
 │   ├── fig_lemur_update.py            # Regenerate Fig 1 & 3 with mouse lemur
@@ -327,6 +330,12 @@ python scripts/24_null_model.py
 # 15b. Within-species genome baseline for every species (Table 2).
 #      Needs the raw GTF + RepeatMasker tracks from 00_download_data.sh.
 python scripts/25_genome_baseline.py
+
+# 15c. Specificity and sensitivity checks: constraint/brain-expression matched
+#      control, canonical-TSS robustness, mouse B1 vs B2, FDR for Table 1
+python scripts/27_constraint_matched.py
+python scripts/28_mane_tss.py
+python scripts/29_b1_b2_split.py
 
 # 16. Regenerate Fig 1 & 3 (with lemur) and Fig 4 (5-panel null), build Fig 7, 8 & 9
 python scripts/fig_lemur_update.py
