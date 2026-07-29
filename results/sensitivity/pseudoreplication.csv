@@ -1,0 +1,5 @@
+scheme,n_HK,n_NDD,pct_retained_NDD,median_HK,median_NDD,r,p_value
+none (full set),1714,1025,100.0,0.5,0.25,-0.345,1.2685434286307564e-53
+"genomic thinning, 1 Mb",719,690,67.3,0.5,0.25,-0.354,2.0432355365337175e-32
+"genomic thinning, 5 Mb",342,342,33.4,0.5,0.25,-0.291,6.754934868447802e-12
+one per symbol root,1109,748,73.0,0.5,0.25,-0.301,1.9147382852288495e-29
