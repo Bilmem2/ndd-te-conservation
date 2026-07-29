@@ -18,7 +18,7 @@ This repository contains all analysis scripts, processed gene lists, statistical
 ```
 .
 ├── scripts/
-│   │   # Numbered 01-32 in pipeline order. Scripts tagged (exploratory) are retained
+│   │   # Numbered 01-33 in pipeline order. Scripts tagged (exploratory) are retained
 │   │   # for provenance and are NOT used as evidence in the manuscript.
 │   ├── 01_prepare_gene_lists.py       # Curate NDD and Housekeeping gene sets
 │   ├── 02_rmsk_to_bed.sh              # Extract Alu/LINE-1/B1B2 BED from RepeatMasker
@@ -52,6 +52,7 @@ This repository contains all analysis scripts, processed gene lists, statistical
 │   ├── 30_squirrel_monkey.py          # Second Platyrrhine (Saimiri boliviensis)
 │   ├── 31_pseudoreplication.py        # Thinning clustered/paralogous promoters
 │   ├── 32_matching_sensitivity.py     # Matched-control robustness (order, metric, covariates)
+│   ├── 33_insertion_opportunity.py    # L1 endonuclease site density = insertion opportunity
 │   ├── probe_dosage.py                # (exploratory) dosage-sensitivity continuum probe (did not hold)
 │   ├── probe_subfamily.py             # (exploratory) Alu subfamily-age (AluJ/S/Y) probe (inconclusive)
 │   ├── fig_lemur_update.py            # Regenerate Fig 1 (7 primates) & Fig 3 (9 species)
@@ -136,6 +137,7 @@ This repository contains all analysis scripts, processed gene lists, statistical
 │   ├── ccre/                       # ENCODE cCRE functional overlay (Fig 8)
 │   ├── brain/                      # Fetal-brain DNase specificity overlay (Fig 9)
 │   ├── matched/                    # Matched control + honest re-baselining
+│   ├── mechanism/                  # L1 endonuclease insertion-opportunity test
 │   ├── consolidated/              # Master cross-species table + RESULTS_BACKBONE.md
 │   ├── functional/                 # Exploratory constraint/expression + subfamily probes
 │   └── gnomad_mei/                 # Exploratory polymorphic-MEI decomposition
@@ -353,6 +355,7 @@ python scripts/30_squirrel_monkey.py
 # 15e. Non-independence check: genomic thinning + one-per-family
 python scripts/31_pseudoreplication.py
 python scripts/32_matching_sensitivity.py
+python scripts/33_insertion_opportunity.py
 
 # 16. Regenerate Fig 1 & 3 (with lemur) and Fig 4 (5-panel null), build Fig 7, 8 & 9
 python scripts/fig_lemur_update.py
