@@ -45,7 +45,8 @@ primates = [
     ("saiBol1", "Squirrel monkey\n(SaiBol1.0)", 40),
     ("mmur3", "Mouse lemur\n(Mmur_3.0)", 70),
 ]
-fig, axes = plt.subplots(1, len(primates), figsize=(3.5 * len(primates), 6))
+fig, axes = plt.subplots(1, len(primates), figsize=(3.5 * len(primates), 6),
+                         sharey=True)  # common scale: panels must be comparable by eye
 for ax, (sp, label, mya) in zip(axes, primates):
     hk = dens(f"{RES}/{sp}/Housekeeping_Alu.bed")
     nd = dens(f"{RES}/{sp}/HighConfNDD_Alu.bed")

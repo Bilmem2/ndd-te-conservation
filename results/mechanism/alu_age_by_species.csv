@@ -1,0 +1,7 @@
+species,n_alu,median_milliDiv,mean_milliDiv,q25,pct_young
+Human,1282821,119.0,123.2,96.0,74.1
+Orangutan,1176006,121.0,126.8,98.0,72.2
+Gibbon,1142070,125.0,129.3,100.0,69.2
+Macaque,1248211,124.0,123.9,98.0,71.5
+Marmoset,1230588,142.0,145.9,118.0,58.3
+Squirrel monkey,1108363,141.0,142.9,115.0,58.9
