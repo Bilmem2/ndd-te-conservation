@@ -155,6 +155,42 @@ def main():
                          HK_sense="", HK_antisense="", HK_pct_sense="",
                          odds_ratio="", p_fisher=p))
 
+    # --- per-subfamily depletion with bootstrap CIs on the NDD/HK ratio ---
+    print("\n=== NDD/HK density ratio by subfamily (bootstrap 95% CI) ===")
+    kb = (prom["end"] - prom["start"]) / 1000.0
+    is_nd = (prom["category"] == "NDD").values
+    sub_rows = []
+    rng = np.random.default_rng(0)
+    for fam in ["AluY", "AluS", "AluJ"]:
+        fam_alu = alu[alu["subfamily"] == fam]
+        cnt = np.zeros(len(prom), dtype=int)
+        pg = {c: g for c, g in fam_alu.groupby("chrom")}
+        for i, r in enumerate(prom.itertuples()):
+            g = pg.get(r.chrom)
+            if g is None:
+                continue
+            s = g["start"].values
+            e = g["end"].values
+            o = np.argsort(s)
+            s, e = s[o], e[o]
+            lo = np.searchsorted(s, r.end, "left")
+            if lo:
+                cnt[i] = int(np.count_nonzero(e[:lo] > r.start))
+        d = cnt / kb.values
+        nd_d, hk_d = d[is_nd], d[~is_nd]
+        ratio = nd_d.mean() / hk_d.mean()
+        b = np.empty(4000)
+        for k in range(4000):
+            b[k] = (rng.choice(nd_d, len(nd_d), True).mean() /
+                    rng.choice(hk_d, len(hk_d), True).mean())
+        lo_ci, hi_ci = np.nanpercentile(b, [2.5, 97.5])
+        sub_rows.append(dict(subfamily=fam, dens_NDD=round(float(nd_d.mean()), 4),
+                             dens_HK=round(float(hk_d.mean()), 4),
+                             ratio_NDD_HK=round(float(ratio), 3),
+                             ci_low=round(float(lo_ci), 3), ci_high=round(float(hi_ci), 3)))
+        print(f"  {fam}: ratio={ratio:.3f}  95% CI [{lo_ci:.3f}, {hi_ci:.3f}]")
+    pd.DataFrame(sub_rows).to_csv(OUT / "subfamily_ratio_ci.csv", index=False)
+
     out = pd.DataFrame(rows)
     out.to_csv(OUT / "orientation_bias.csv", index=False)
     pd.set_option("display.width", 220)
