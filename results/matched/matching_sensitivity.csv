@@ -1,0 +1,7 @@
+scheme,covariates,metric,n_runs,n_pairs,r_median,r_min,r_max,p_max
+original (natural order),loeuf+brain_log+gc,mahalanobis,1,914,-0.106,-0.106,-0.106,2.349744189436763e-05
+25 random matching orders,loeuf+brain_log+gc,mahalanobis,25,914,-0.101,-0.107,-0.095,0.0001398887245013173
+standardised Euclidean,loeuf+brain_log+gc,euclidean,10,914,-0.098,-0.103,-0.094,0.0001561632552980216
+"caliper, closest 90%",loeuf+brain_log+gc,mahalanobis,10,822,-0.096,-0.108,-0.086,0.0009499052495074494
+LOEUF only,loeuf,mahalanobis,10,914,-0.114,-0.115,-0.113,7.736873140703917e-06
+LOEUF + brain expression,loeuf+brain_log,mahalanobis,10,914,-0.13,-0.134,-0.127,6.618979217636301e-07
