@@ -1,0 +1,4 @@
+gene_set,n_promoters,pct_plus_strand,median_alu,r_vs_housekeeping,p_vs_housekeeping,ratio_vs_genome,genome_CI,p_vs_genome
+HighConfNDD,1011,49.8,0.25,-0.349,5.238428468349845e-54,0.763,"[0.704, 0.824]",1.8361608310118544e-18
+Cardiovascular,213,54.0,0.25,-0.301,2.1097353409329894e-13,0.859,"[0.728, 1.003]",0.003430458903362782
+Mendelian,5646,50.1,0.25,-0.222,2.3529465011091014e-45,0.976,"[0.945, 1.007]",0.005669933717444526
