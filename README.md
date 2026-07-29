@@ -45,6 +45,7 @@ This repository contains all analysis scripts, processed gene lists, statistical
 │   ├── 23_brain_overlay.py            # Fetal-brain DNase regulatory-specificity overlay (Fig 9)
 │   ├── 24_null_model.py               # Permutation null model, all 5 species-TE combos
 │   ├── 25_genome_baseline.py          # Within-species genome baseline, all species (Table 2)
+│   ├── 26_cross_disease_recompute.py  # Repaired ClinVar gene sets + genome-referenced comparison
 │   ├── probe_dosage.py                # (exploratory) dosage-sensitivity continuum probe (did not hold)
 │   ├── probe_subfamily.py             # (exploratory) Alu subfamily-age (AluJ/S/Y) probe (inconclusive)
 │   ├── fig_lemur_update.py            # Regenerate Fig 1 & 3 with mouse lemur
@@ -286,7 +287,10 @@ bash scripts/05_intersect.sh
 # 6. Window sensitivity analysis (± 0.5, 1, 2, 3 kb)
 python scripts/09_window_sensitivity.py
 
-# 7. Cross-disease specificity analysis (ClinVar)
+# 7. Cross-disease specificity analysis (ClinVar).
+#    Requires data/clinvar_variants.txt.gz. If ClinVar is not available locally,
+#    26_cross_disease_recompute.py reproduces the reported numbers from the
+#    committed gene lists instead.
 python scripts/10_cross_disease.py
 
 # 8. Final statistics across all 7 species (including mouse B1/B2)
