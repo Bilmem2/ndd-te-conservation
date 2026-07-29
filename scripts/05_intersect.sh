@@ -24,6 +24,13 @@ for SP in hg38 ponAbe3 nomLeu3 rheMac10 calJac4 mm10 canFam4; do
                 > $OUT/${CAT}_Alu.bed
             echo "  $CAT Alu: done"
         fi
+
+        # B1/B2: sadece fare (primat Alu'nun fonksiyonel SINE analogu)
+        if [[ "$SP" == "mm10" ]]; then
+            bedtools intersect -a $PROM -b $BASE/$SP/rmsk/B1B2.bed -c \
+                > $OUT/${CAT}_B1B2.bed
+            echo "  $CAT B1/B2: done"
+        fi
     done
 done
 

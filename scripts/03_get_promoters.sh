@@ -9,7 +9,7 @@ for SP in hg38 ponAbe3 nomLeu3 rheMac10 calJac4 mm10 canFam4; do
     # Dosyayı bul, bulamazsa donmak yerine hata verip atla
     GTF_GZ=$(ls $BASE/$SP/gtf/*.gtf.gz 2>/dev/null)
     if [ -z "$GTF_GZ" ]; then
-        echo "  ERROR: GTF file not found for $SP!
+        echo "  ERROR: GTF file not found for $SP!" >&2
         continue
     fi
     
