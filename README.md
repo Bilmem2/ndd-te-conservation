@@ -1,4 +1,4 @@
-# Conserved SINE and Lineage-Variable LINE-1 Depletion at NDD Gene Promoters Across Primates and Mammals
+# Conserved SINE and Lineage-Variable LINE-1 Depletion at Neurodevelopmental Disorder Promoters
 
 **Can Sevilmiş** | Department of Molecular Biology and Genetics, Bahçeşehir University, Istanbul, Turkey
 
