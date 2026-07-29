@@ -130,15 +130,17 @@ This repository contains all analysis scripts, processed gene lists, statistical
 │   └── gnomad_mei/                 # Exploratory polymorphic-MEI decomposition
 │
 └── figures/
-    ├── Fig1_Alu_Primates.pdf/.png     # Alu depletion across 6 primates (incl. mouse lemur)
-    ├── Fig2_LINE1_Mammals.pdf/.png    # LINE-1 depletion across 7 mammals
-    ├── Fig3_Heatmap.pdf/.png          # Significance heatmap (8 species × TE class)
-    ├── Fig4_NullModel.pdf/.png        # Permutation null model validation
-    ├── Fig5_CpG.pdf/.png              # CpG island confounder analysis
-    ├── Fig6_GC_Analysis.pdf/.png      # Promoter GC content analysis
-    ├── Fig7_ContextControls.pdf/.png  # Gene density + recombination + matched control
-    ├── Fig8_cCRE.pdf/.png             # ENCODE cCRE functional overlay
-    └── Fig9_BrainSpecificity.pdf/.png # Fetal-brain regulatory specificity (DNase-seq)
+    │   # File names are historical; the bracketed label is the number the figure
+    │   # carries in the manuscript, where four of them are supplementary.
+    ├── Fig1_Alu_Primates.pdf/.png     # [Fig 1]  Alu depletion across 6 primates (incl. mouse lemur)
+    ├── Fig3_Heatmap.pdf/.png          # [Fig 2]  Significance heatmap (8 species × TE class)
+    ├── Fig7_ContextControls.pdf/.png  # [Fig 3]  Gene density + recombination + matched control
+    ├── Fig8_cCRE.pdf/.png             # [Fig 4]  ENCODE cCRE functional overlay
+    ├── Fig9_BrainSpecificity.pdf/.png # [Fig 5]  Fetal-brain regulatory specificity (DNase-seq)
+    ├── Fig2_LINE1_Mammals.pdf/.png    # [Fig S1] LINE-1 depletion across 7 mammals
+    ├── Fig4_NullModel.pdf/.png        # [Fig S2] Permutation null model validation
+    ├── Fig5_CpG.pdf/.png              # [Fig S3] CpG island confounder analysis
+    └── Fig6_GC_Analysis.pdf/.png      # [Fig S4] Promoter GC content analysis
 ```
 
 ---
