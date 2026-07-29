@@ -43,11 +43,13 @@ This repository contains all analysis scripts, processed gene lists, statistical
 │   ├── 21_lemur_ortholog.py           # Mouse lemur ortholog validation (BioMart)
 │   ├── 22_consolidate.py              # Master cross-species table + results backbone
 │   ├── 23_brain_overlay.py            # Fetal-brain DNase regulatory-specificity overlay (Fig 9)
+│   ├── 24_null_model.py               # Permutation null model, all 5 species-TE combos
 │   ├── probe_dosage.py                # (exploratory) dosage-sensitivity continuum probe (did not hold)
 │   ├── probe_subfamily.py             # (exploratory) Alu subfamily-age (AluJ/S/Y) probe (inconclusive)
 │   ├── fig_lemur_update.py            # Regenerate Fig 1 & 3 with mouse lemur
 │   ├── fig_new.py                     # Generate Fig 7 (context) & Fig 8 (cCRE)
-│   └── fig_brain.py                   # Generate Fig 9 (fetal-brain specificity)
+│   ├── fig_brain.py                   # Generate Fig 9 (fetal-brain specificity)
+│   └── fig_null_update.py             # Regenerate Fig 4 (5-panel permutation null model)
 │
 ├── data/
 │   ├── gene_lists/
@@ -63,7 +65,7 @@ This repository contains all analysis scripts, processed gene lists, statistical
 ├── results/
 │   ├── statistics_final.csv        # Main results: all species, symbol-based matching
 │   ├── statistics_ortholog.csv     # Validation: Ensembl BioMart 1:1 ortholog-based matching
-│   ├── null_model_new.csv          # Permutation test results (n=10,000)
+│   ├── null_model_full.csv         # Permutation test, all 5 species-TE combos (n=10,000)
 │   ├── encode_overlap_v2.csv       # ENCODE overlap results (exploratory)
 │   ├── hg38/                       # Human
 │   │   ├── HighConfNDD_Alu.bed
@@ -312,12 +314,16 @@ python scripts/19_rebaseline.py
 python scripts/20_lemur.py
 python scripts/21_lemur_ortholog.py
 
-# 15. Regenerate Fig 1 & 3 (with lemur), and build Fig 7, 8 & 9
+# 15. Permutation null model across all five species-TE combinations (Fig 4 data)
+python scripts/24_null_model.py
+
+# 16. Regenerate Fig 1 & 3 (with lemur) and Fig 4 (5-panel null), build Fig 7, 8 & 9
 python scripts/fig_lemur_update.py
+python scripts/fig_null_update.py
 python scripts/fig_new.py
 python scripts/fig_brain.py
 
-# 16. Consolidate all results into the master cross-species table + backbone
+# 17. Consolidate all results into the master cross-species table + backbone
 python scripts/22_consolidate.py
 ```
 

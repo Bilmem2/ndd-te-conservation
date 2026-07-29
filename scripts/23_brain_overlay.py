@@ -125,6 +125,8 @@ def main():
                        p_value=p, r=round(rb(hk, nd), 3)))
     q4 = pd.DataFrame(q4)
 
+    q4.to_csv(OUT / "alu_by_brain_dnase_stratum.csv", index=False)
+
     rmap = dict(zip(persample["sample"], persample["ratio_NDD_HK"]))
     summ = dict(
         brain_ratios=[rmap[n] for n in BRAIN],
