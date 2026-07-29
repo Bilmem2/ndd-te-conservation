@@ -173,9 +173,29 @@ def main():
     bal = pd.DataFrame(bal)
     print(bal.to_string(index=False))
 
+    # primary test: NDD vs its own matched controls (not mediated by the genome)
     _, p = stats.mannwhitneyu(ctrl["alu_d"], ndm["alu_d"], alternative="greater")
     r = rb(ctrl["alu_d"].values, ndm["alu_d"].values)
     n_hk_in_ctrl = int(ctrl["gene"].isin(hk).sum())
+
+    # is the matched control itself below the genome baseline?
+    ctrl_genes = set(ctrl["gene"])
+    rest = prom["alu_d"].values[~prom["gene"].isin(ctrl_genes).values]
+    rest = rest[~np.isnan(rest)]
+    _, p_ctrl_vs_genome = stats.mannwhitneyu(rest, ctrl["alu_d"].values,
+                                             alternative="greater")
+
+    def boot_ci(vals, seed):
+        rng = np.random.default_rng(seed)
+        allv = prom["alu_d"].dropna().values
+        b = np.empty(N_BOOT)
+        for k in range(N_BOOT):
+            b[k] = (rng.choice(vals, len(vals), True).mean() /
+                    rng.choice(allv, len(allv), True).mean())
+        return np.nanpercentile(b, [2.5, 97.5])
+
+    ci_nd = boot_ci(ndm["alu_d"].values, 11)
+    ci_ct = boot_ci(ctrl["alu_d"].values, 12)
 
     rows = [dict(comparison="NDD vs constraint+brain+GC matched control",
                  n_NDD=len(ndm), n_control=len(ctrl),
@@ -184,7 +204,10 @@ def main():
                  mean_alu_NDD=round(float(ndm["alu_d"].mean()), 3),
                  mean_alu_control=round(float(ctrl["alu_d"].mean()), 3),
                  NDD_over_genome=round(float(ndm["alu_d"].mean()) / genome_mean, 3),
+                 NDD_genome_CI=f"[{ci_nd[0]:.3f}, {ci_nd[1]:.3f}]",
                  control_over_genome=round(float(ctrl["alu_d"].mean()) / genome_mean, 3),
+                 control_genome_CI=f"[{ci_ct[0]:.3f}, {ci_ct[1]:.3f}]",
+                 p_control_below_genome=p_ctrl_vs_genome,
                  r=round(r, 3), p_value=p,
                  housekeeping_genes_in_control=n_hk_in_ctrl)]
     res = pd.DataFrame(rows)

@@ -54,7 +54,8 @@ This repository contains all analysis scripts, processed gene lists, statistical
 │   ├── fig_lemur_update.py            # Regenerate Fig 1 & 3 with mouse lemur
 │   ├── fig_new.py                     # Generate Fig 7 (context) & Fig 8 (cCRE)
 │   ├── fig_brain.py                   # Generate Fig 9 (fetal-brain specificity)
-│   └── fig_null_update.py             # Regenerate Fig 4 (5-panel permutation null model)
+│   ├── fig_null_update.py             # Regenerate Fig 4 (5-panel permutation null model)
+│   └── fig_phylo.py                   # Generate Fig S5 (effect size vs divergence time)
 │
 ├── data/
 │   ├── gene_lists/
@@ -143,7 +144,8 @@ This repository contains all analysis scripts, processed gene lists, statistical
     ├── Fig2_LINE1_Mammals.pdf/.png    # [Fig S1] LINE-1 depletion across 7 mammals
     ├── Fig4_NullModel.pdf/.png        # [Fig S2] Permutation null model validation
     ├── Fig5_CpG.pdf/.png              # [Fig S3] CpG island confounder analysis
-    └── Fig6_GC_Analysis.pdf/.png      # [Fig S4] Promoter GC content analysis
+    ├── Fig6_GC_Analysis.pdf/.png      # [Fig S4] Promoter GC content analysis
+    └── FigS5_PhyloEffect.pdf/.png     # [Fig S5] Effect size vs divergence time
 ```
 
 ---
