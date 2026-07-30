@@ -39,7 +39,7 @@ ax[0].set_xticks(range(len(ps)))
 ax[0].set_xticklabels([label[s] for s in ps["sample"]], rotation=30, ha="right", fontsize=9)
 ax[0].set_ylabel("NDD / housekeeping DNase enrichment")
 ax[0].set_ylim(0, 1.45)
-ax[0].set_title("A  Fetal DNase enrichment at NDD promoters\n(3 brain donors vs 3 non-neural tissues)",
+ax[0].set_title("a  Fetal DNase enrichment at NDD promoters\n(3 brain donors vs 3 non-neural tissues)",
                 fontweight="bold", fontsize=10, loc="left")
 from matplotlib.patches import Patch
 ax[0].legend(handles=[Patch(color=BRAINC, label="fetal brain"), Patch(color=CTRLC, label="non-neural control")],
@@ -53,7 +53,7 @@ ax[1].axhline(0, color="k", lw=0.8)
 ax[1].set_ylim(min(QR) * 1.25, 0.03)
 ax[1].set_ylabel("Alu depletion  (rank-biserial r, HK > NDD)")
 ax[1].set_xlabel("composite fetal-brain DNase density")
-ax[1].set_title("B  Alu depletion is strongest in the most\nfetal-brain-active promoters",
+ax[1].set_title("b  Alu depletion is strongest in the most\nfetal-brain-active promoters",
                 fontweight="bold", fontsize=10, loc="left")
 for i in range(4):
     ax[1].text(i, 0.008, "***", ha="center", fontsize=9)
