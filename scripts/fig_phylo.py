@@ -42,8 +42,6 @@ ax.set_xlabel("Divergence time from human (Mya)")
 ax.set_ylabel("SINE depletion  (rank-biserial $r$, HK > NDD)")
 ax.set_ylim(-0.48, 0.06)
 ax.set_xlim(-5, 100)
-ax.set_title("Effect size does not track divergence time", fontweight="bold",
-             fontsize=11, loc="left")
 ax.legend(fontsize=9, loc="lower left")
 ax.grid(alpha=0.25, ls=":")
 

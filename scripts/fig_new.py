@@ -55,10 +55,6 @@ ax[2].set_title("Joint multivariate matching", fontweight="bold", fontsize=11)
 ax[2].set_ylabel("rank-biserial r")
 ax[2].set_ylim(min(rvals) * 1.35, 0.05)
 
-plt.suptitle("Alu Depletion at NDD Promoters Is Robust to Genomic-Context Confounders\n"
-             "NDD and housekeeping promoters differ in gene density and recombination, "
-             "yet depletion persists in every stratum and after joint matching",
-             fontweight="bold", fontsize=12)
 plt.tight_layout(rect=[0, 0, 1, 0.93])
 plt.savefig(f"{FIGS}/Fig7_ContextControls.pdf", dpi=300, bbox_inches="tight")
 plt.savefig(f"{FIGS}/Fig7_ContextControls.png", dpi=150, bbox_inches="tight")
@@ -108,8 +104,6 @@ ax[2].set_title("Depletion persists across\nregulatory-density quartiles", fontw
 for i, p in enumerate(cs["p_value"]):
     ax[2].text(i, 0.01, "***" if p < 1e-3 else "**" if p < 1e-2 else "*" if p < 0.05 else "ns", ha="center", fontsize=9)
 
-plt.suptitle("Alu-Depleted NDD Promoters Are Functionally Active Regulatory Regions (ENCODE cCREs)",
-             fontweight="bold", fontsize=12)
 plt.tight_layout(rect=[0, 0, 1, 0.94])
 plt.savefig(f"{FIGS}/Fig8_cCRE.pdf", dpi=300, bbox_inches="tight")
 plt.savefig(f"{FIGS}/Fig8_cCRE.png", dpi=150, bbox_inches="tight")

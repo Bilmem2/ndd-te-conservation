@@ -26,7 +26,7 @@ fetches them. Everything needed to regenerate the **statistics and figures** is 
 ## Repository layout
 
 ```
-scripts/     01–35, in pipeline order (see "Reproducing the analysis")
+scripts/     01–40, in pipeline order (see "Reproducing the analysis")
 data/
   gene_lists/    HighConfNDD (n=1020), Housekeeping (n=1679), Cardiovascular, Mendelian
   orthologs/     Ensembl BioMart 1:1 ortholog tables (committed; see note below)
@@ -54,7 +54,7 @@ carries in the manuscript, where four of the nine are supplementary.
 | `Fig7_ContextControls` | Fig 3 | Gene density, recombination, matched control |
 | `Fig8_cCRE` | Fig 4 | ENCODE cCRE overlay |
 | `Fig9_BrainSpecificity` | Fig 5 | Fetal-brain regulatory specificity |
-| `Fig2_LINE1_Mammals` | Fig S1 | LINE-1 across seven mammals |
+| `Fig2_LINE1_Mammals` | Fig S1 | LINE-1 across nine mammals |
 | `Fig4_NullModel` | Fig S2 | Permutation null model |
 | `Fig5_CpG` | Fig S3 | CpG island stratification |
 | `Fig6_GC_Analysis` | Fig S4 | Promoter GC content |
@@ -79,9 +79,16 @@ carries in the manuscript, where four of the nine are supplementary.
 
 The **mouse lemur** track comes instead from the UCSC GenArk hub
 (`GCF_000165445.2`); its RefSeq sequence names are mapped onto the Ensembl GTF via the
-hub's `chromAlias.txt`. For the **squirrel monkey**, Ensembl uses versioned INSDC
-accessions (`JH378105.1`) where UCSC uses the unversioned form, so the suffix is stripped
-before matching.
+hub's `chromAlias.txt`. Alu was taken from that hub's BED; LINE-1 is parsed from the
+hub's `GCF_000165445.2.repeatMasker.out.gz` by `37_lemur_line1.py`, which writes
+`data/mmur3/line1_refseq.bed` on first run. For the **squirrel monkey**, Ensembl uses
+versioned INSDC accessions (`JH378105.1`) where UCSC uses the unversioned form, so the
+suffix is stripped before matching.
+
+Two further downloads are fetched on demand rather than by `00_download_data.sh`:
+the hg38 CpG-island track (`cpgIslandExt`, used by `12_figures_final.py` for the CpG
+stratification figure) and the mouse lemur RepeatMasker output above. Both are excluded
+from version control by size.
 
 > **Dog folder name.** `data/canFam4/` and `results/canFam4/` are named for historical
 > reasons; the data they hold is **ROS_Cfam_1.0 (UCSC canFam6)**. The two are
@@ -123,8 +130,8 @@ conda activate bio_master
 Python 3.10 with pandas, numpy, scipy, matplotlib, seaborn, plus **twobitreader**
 (promoter GC from `hg38.2bit`) and **tabulate**.
 
-**BEDTools ≥ 2.31** must be installed separately; it is used by scripts 05 and 08–12.
-Later scripts compute interval overlaps in NumPy and do not need it. RepeatMasker itself
+**BEDTools ≥ 2.31** must be installed separately; it is used by scripts 05 and 08–11.
+Script 12 and everything after it compute interval overlaps in NumPy and do not need it. RepeatMasker itself
 is never run — the pipeline parses pre-computed UCSC tracks.
 
 ---
@@ -180,6 +187,11 @@ python scripts/32_matching_sensitivity.py # matching order, metric, covariates
 python scripts/33_insertion_opportunity.py# L1 endonuclease site density
 python scripts/34_orientation_bias.py     # orientation and subfamily age
 python scripts/35_alu_age_by_species.py   # Alu divergence per species
+python scripts/36_loeuf_gradient.py       # Alu density across LOEUF deciles
+python scripts/37_lemur_line1.py          # mouse lemur LINE-1
+python scripts/38_squirrel_ortholog.py    # squirrel monkey 1:1 ortholog control
+python scripts/39_squirrel_line1.py       # squirrel monkey LINE-1 (completes the panel)
+python scripts/40_gc_analysis.py          # promoter GC + GC-stratified depletion (Fig S4)
 
 # 11   functional overlays
 python scripts/16_ccre_overlay.py

@@ -58,8 +58,6 @@ ax[1].set_title("B  Alu depletion is strongest in the most\nfetal-brain-active p
 for i in range(4):
     ax[1].text(i, 0.008, "***", ha="center", fontsize=9)
 
-plt.suptitle("Alu depletion at NDD promoters preferentially associates with fetal-brain regulatory elements",
-             fontweight="bold", fontsize=12)
 plt.tight_layout(rect=[0, 0, 1, 0.95])
 plt.savefig(f"{FIGS}/Fig9_BrainSpecificity.pdf", dpi=300, bbox_inches="tight")
 plt.savefig(f"{FIGS}/Fig9_BrainSpecificity.png", dpi=150, bbox_inches="tight")

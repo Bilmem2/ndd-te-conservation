@@ -10,6 +10,29 @@ import os, subprocess
 from io import StringIO
 from pathlib import Path
 
+
+def _count_overlaps(regions, feature_bed):
+    """Count features overlapping each region. Equivalent to `bedtools intersect -c`
+    (verified identical on the hg38 CpG-island track); avoids a bedtools dependency."""
+    import numpy as _np
+    import pandas as _pd
+    feats = _pd.read_csv(feature_bed, sep="\t", header=None, usecols=[0, 1, 2],
+                         names=["chr", "start", "end"], comment="#")
+    counts = _np.zeros(len(regions), dtype=int)
+    for chrom, idx in regions.groupby("chr").groups.items():
+        sub = feats[feats["chr"] == chrom]
+        if sub.empty:
+            continue
+        starts = _np.sort(sub["start"].to_numpy())
+        ends = _np.sort(sub["end"].to_numpy())
+        rows = regions.loc[idx]
+        counts[regions.index.get_indexer(idx)] = (
+            _np.searchsorted(starts, rows["end"].to_numpy(), side="left")
+            - _np.searchsorted(ends, rows["start"].to_numpy(), side="right")
+        )
+    return counts
+
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 RESULTS = REPO_ROOT / "results"
 DATA = REPO_ROOT / "data"
@@ -23,7 +46,8 @@ plt.rcParams.update({'font.family': 'DejaVu Sans', 'font.size': 11})
 def get_density(filepath):
     if not os.path.exists(filepath): return None
     df = pd.read_csv(filepath, sep='\t', header=None)
-    return (df.iloc[:,6] / ((df.iloc[:,2]-df.iloc[:,1])/1000)).values
+    # TE count is always the last column; promoter BEDs carry 6 or 7 columns
+    return (df.iloc[:,-1] / ((df.iloc[:,2]-df.iloc[:,1])/1000)).values
 
 def add_significance(ax, x1, x2, y, p):
     sig = "***" if p<0.001 else "**" if p<0.01 else "*" if p<0.05 else "ns"
@@ -67,9 +91,6 @@ patches = [mpatches.Patch(color=COLORS[c], label=c.replace('HighConfNDD','NDD'),
            for c in ['Housekeeping','HighConfNDD']]
 fig.legend(handles=patches, loc='lower center', ncol=2,
            bbox_to_anchor=(0.5,-0.02), frameon=False, fontsize=10)
-plt.suptitle('Alu Depletion at NDD Gene Promoters Across Primates\n'
-             'TSS ± 2 kb | HighConfNDD vs Housekeeping | Mann-Whitney U',
-             fontweight='bold', fontsize=12)
 plt.tight_layout(rect=[0,0.05,1,0.95])
 plt.savefig(f"{FIGS}/Fig1_Alu_Primates.pdf", dpi=300, bbox_inches='tight')
 plt.savefig(f"{FIGS}/Fig1_Alu_Primates.png", dpi=150, bbox_inches='tight')
@@ -81,16 +102,18 @@ print("  Fig1 kaydedildi.")
 # ══════════════════════════════════════════════════════
 print("Fig2 çiziliyor...")
 all_species = [
-    ("hg38",     "Human",     0),
-    ("ponAbe3",  "Orangutan", 16),
-    ("nomLeu3",  "Gibbon",    20),
-    ("rheMac10", "Macaque",   25),
-    ("calJac4",  "Marmoset",  40),
-    ("mm10",     "Mouse",     90),
-    ("canFam4",  "Dog",       95),
+    ("hg38",     "Human",           0),
+    ("ponAbe3",  "Orangutan",      16),
+    ("nomLeu3",  "Gibbon",         20),
+    ("rheMac10", "Macaque",        25),
+    ("calJac4",  "Marmoset",       40),
+    ("saiBol1",  "Squirrel monkey", 40),
+    ("mmur3",    "Mouse lemur",    70),
+    ("mm10",     "Mouse",          90),
+    ("canFam4",  "Dog",            95),
 ]
 
-fig, axes = plt.subplots(1, 7, figsize=(22, 6), sharey=False)
+fig, axes = plt.subplots(1, len(all_species), figsize=(28, 6), sharey=False)
 for ax, (sp, label, mya) in zip(axes, all_species):
     hk  = get_density(f"{RESULTS}/{sp}/Housekeeping_LINE1.bed")
     ndd = get_density(f"{RESULTS}/{sp}/HighConfNDD_LINE1.bed")
@@ -113,9 +136,6 @@ for ax, (sp, label, mya) in zip(axes, all_species):
 
 fig.legend(handles=patches, loc='lower center', ncol=2,
            bbox_to_anchor=(0.5,-0.02), frameon=False, fontsize=10)
-plt.suptitle('LINE-1 Depletion at NDD Gene Promoters Across Mammals\n'
-             'TSS ± 2 kb | HighConfNDD vs Housekeeping | Mann-Whitney U',
-             fontweight='bold', fontsize=12)
 plt.tight_layout(rect=[0,0.05,1,0.95])
 plt.savefig(f"{FIGS}/Fig2_LINE1_Mammals.pdf", dpi=300, bbox_inches='tight')
 plt.savefig(f"{FIGS}/Fig2_LINE1_Mammals.png", dpi=150, bbox_inches='tight')
@@ -176,8 +196,6 @@ for i in range(7):
             ax.text(j, i, sig_mat[i][j], ha='center', va='center',
                     fontsize=8, color=color, fontweight='bold')
 
-ax.set_title('TE Depletion Significance: HK vs NDD Gene Promoters\n'
-             'Across Species and TE Classes', fontweight='bold', fontsize=11)
 plt.tight_layout()
 plt.savefig(f"{FIGS}/Fig3_Heatmap.pdf", dpi=300, bbox_inches='tight')
 plt.savefig(f"{FIGS}/Fig3_Heatmap.png", dpi=150, bbox_inches='tight')
@@ -218,16 +236,12 @@ for ax, (sp, label, te) in zip(axes, null_species):
     ax.set_xlabel('p-value', fontsize=10)
     if ax == axes[0]: ax.set_ylabel('Frequency', fontsize=10)
     te_label = {"Alu": "Alu", "B1B2": "B1/B2 (SINE)", "LINE1": "LINE-1"}[te]
-    ax.set_title(f"{label} | {te_label}", fontweight='bold', fontsize=11)
     info = f"Emp. p={emp_p:.4f}\nNull FPR={null_fpr:.3f}"
     ax.text(0.97, 0.97, info, transform=ax.transAxes,
             ha='right', va='top', fontsize=8,
             bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.8))
     ax.legend(fontsize=8, loc='upper left')
 
-plt.suptitle(f'Permutation Test: Observed NDD Depletion vs. Random Gene Sets\n'
-             f'n={N_PERM:,} permutations',
-             fontweight='bold', fontsize=12)
 plt.tight_layout()
 plt.savefig(f"{FIGS}/Fig4_NullModel.pdf", dpi=300, bbox_inches='tight')
 plt.savefig(f"{FIGS}/Fig4_NullModel.png", dpi=150, bbox_inches='tight')
@@ -254,11 +268,8 @@ for ax, (cpg_status, cpg_label) in zip(axes,
         df_alu['density'] = df_alu['alu_count'] / ((df_alu['end']-df_alu['start'])/1000)
         # Add CpG overlap
         alu_file_path = alu_file
-        cpg_out = subprocess.run(
-            ["bedtools","intersect","-a",alu_file_path,"-b",cpg_bed,"-c"],
-            capture_output=True, text=True).stdout
-        df_cpg = pd.read_csv(StringIO(cpg_out), sep='\t', header=None)
-        df_cpg.columns = ['chr','start','end','gene','score','strand','alu_count','cpg_n']
+        df_cpg = df_alu.copy()
+        df_cpg['cpg_n'] = _count_overlaps(df_cpg, cpg_bed)
         df_cpg['density'] = df_cpg['alu_count'] / ((df_cpg['end']-df_cpg['start'])/1000)
         df_cpg['gene'] = df_cpg['gene']
         df = df_cpg[['gene','density','cpg_n']]
@@ -278,16 +289,12 @@ for ax, (cpg_status, cpg_label) in zip(axes,
     _, p = stats.mannwhitneyu(plot_data[0], plot_data[1], alternative='greater')
     ymax = max(np.quantile(plot_data[0],0.95), np.quantile(plot_data[1],0.95))
     add_significance(ax, 1, 2, ymax*1.18, p)
-    ax.set_title(f'{cpg_label}\nn = {ns[0]}, {ns[1]}', fontweight='bold')
     ax.set_xticks([1,2])
     ax.set_xticklabels(['Housekeeping','NDD'], fontsize=10)
     ax.set_ylabel('Alu Frequency (count per kb)' if ax==axes[0] else '')
 
 fig.legend(handles=patches, loc='lower center', ncol=2,
            bbox_to_anchor=(0.5,-0.02), frameon=False, fontsize=10)
-plt.suptitle('Alu Depletion: CpG Island Confounder Test\n'
-             'hg38 | TSS ± 2 kb | HighConfNDD vs Housekeeping',
-             fontweight='bold', fontsize=12)
 plt.tight_layout(rect=[0,0.05,1,1])
 plt.savefig(f"{FIGS}/Fig5_CpG.pdf", dpi=300, bbox_inches='tight')
 plt.savefig(f"{FIGS}/Fig5_CpG.png", dpi=150, bbox_inches='tight')

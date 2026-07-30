@@ -63,8 +63,6 @@ for ax, (assembly, label, te) in zip(axes, COMBOS):
     ax.legend(fontsize=8, loc="upper left")
     print(f"{label:10s} {te:5s} observed p={obs_p:.3e}  emp p={emp_p:.4f}  FPR={null_fpr:.3f}")
 
-plt.suptitle(f"Permutation Test: Observed NDD Depletion vs. Random Gene Sets\n"
-             f"n={N_PERM:,} permutations", fontweight="bold", fontsize=12)
 plt.tight_layout()
 plt.savefig(FIGS / "Fig4_NullModel.pdf", dpi=300, bbox_inches="tight")
 plt.savefig(FIGS / "Fig4_NullModel.png", dpi=150, bbox_inches="tight")

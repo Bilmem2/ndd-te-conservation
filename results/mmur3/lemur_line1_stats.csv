@@ -1,0 +1,2 @@
+species,assembly,mya,TE,n_HK,n_NDD,median_HK,median_NDD,mean_HK,mean_NDD,p_value,r,sig
+MouseLemur,Mmur_3.0,70,LINE1,1324,899,0.0,0.0,0.146,0.115,0.0008444011578728743,-0.064,***

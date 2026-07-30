@@ -69,9 +69,6 @@ patches = [mpatches.Patch(color=COLORS[c], label=c.replace("HighConfNDD", "NDD")
            for c in ["Housekeeping", "HighConfNDD"]]
 fig.legend(handles=patches, loc="lower center", ncol=2, bbox_to_anchor=(0.5, -0.02),
            frameon=False, fontsize=10)
-plt.suptitle("Alu Depletion at NDD Gene Promoters Across Primates (incl. strepsirrhine)\n"
-             "TSS ± 2 kb | HighConfNDD vs Housekeeping | Mann-Whitney U",
-             fontweight="bold", fontsize=12)
 plt.tight_layout(rect=[0, 0.05, 1, 0.95])
 plt.savefig(f"{FIGS}/Fig1_Alu_Primates.pdf", dpi=300, bbox_inches="tight")
 plt.savefig(f"{FIGS}/Fig1_Alu_Primates.png", dpi=150, bbox_inches="tight")
@@ -111,12 +108,10 @@ for i in range(n):
     for j in range(2):
         v = pmat[i, j]
         if np.isnan(v):
-            ax.text(j, i, "—", ha="center", va="center", fontsize=11, color="white")
+            ax.text(j, i, "—", ha="center", va="center", fontsize=14, color="black")
         else:
             ax.text(j, i, sig_mat[i][j], ha="center", va="center", fontsize=8,
                     color="white" if v > 10 else "black", fontweight="bold")
-ax.set_title("TE Depletion Significance: HK vs NDD Gene Promoters\n"
-             "Across Species and TE Classes", fontweight="bold", fontsize=11)
 plt.tight_layout()
 plt.savefig(f"{FIGS}/Fig3_Heatmap.pdf", dpi=300, bbox_inches="tight")
 plt.savefig(f"{FIGS}/Fig3_Heatmap.png", dpi=150, bbox_inches="tight")
