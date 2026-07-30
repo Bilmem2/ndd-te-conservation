@@ -44,8 +44,9 @@ results/
 figures/     see mapping below
 ```
 
-Figure files keep their original names; the bracketed label is the number the figure
-carries in the manuscript, where four of the nine are supplementary.
+Figure files keep their original names; the second column is the number the figure
+carries in the manuscript, where five of the ten are supplementary and are submitted
+as Online Resources rather than inside the article.
 
 | File | Manuscript | Content |
 |------|-----------|---------|
@@ -97,10 +98,13 @@ from version control by size.
 
 ### Ortholog tables
 
-The 1:1 ortholog tables in `data/orthologs/` were generated from **Ensembl BioMart
-(release 112)** and are committed directly. There is no fetch script on purpose: BioMart
-changes between releases, and shipping the exact tables is what makes the ortholog
-validation reproducible.
+The 1:1 ortholog tables in `data/orthologs/` were generated from **Ensembl BioMart**
+and are committed directly. There is no fetch script on purpose: BioMart changes between
+releases, and shipping the exact tables is what makes the ortholog validation
+reproducible. Each was pulled from the `hsapiens_gene_ensembl` dataset with the
+`<species>_homolog_associated_gene_name` and `<species>_homolog_orthology_type`
+attributes, filtered to `ortholog_one2one`; the squirrel monkey prefix is
+`sbboliviensis`.
 
 ### Other datasets
 
@@ -130,9 +134,12 @@ conda activate bio_master
 Python 3.10 with pandas, numpy, scipy, matplotlib, seaborn, plus **twobitreader**
 (promoter GC from `hg38.2bit`) and **tabulate**.
 
-**BEDTools ≥ 2.31** must be installed separately; it is used by scripts 05 and 08–11.
-Script 12 and everything after it compute interval overlaps in NumPy and do not need it. RepeatMasker itself
-is never run — the pipeline parses pre-computed UCSC tracks.
+**BEDTools ≥ 2.31** must be installed separately. It is called by `05_intersect.sh`,
+`08_encode_overlap_v2.py`, `09_window_sensitivity.py`, `10_cross_disease.py`,
+`14_gnomad_mei.py`, `15_context_controls.py` and `16_ccre_overlay.py`. Every other
+script computes interval overlaps in NumPy, including `12_figures_final.py`, whose
+NumPy counter was checked against `bedtools intersect -c` and returns identical counts.
+RepeatMasker itself is never run — the pipeline parses pre-computed UCSC tracks.
 
 ---
 
