@@ -86,10 +86,11 @@ hub's `GCF_000165445.2.repeatMasker.out.gz` by `37_lemur_line1.py`, which writes
 versioned INSDC accessions (`JH378105.1`) where UCSC uses the unversioned form, so the
 suffix is stripped before matching.
 
-Two further downloads are fetched on demand rather than by `00_download_data.sh`:
-the hg38 CpG-island track (`cpgIslandExt`, used by `12_figures_final.py` for the CpG
-stratification figure) and the mouse lemur RepeatMasker output above. Both are excluded
-from version control by size.
+`00_download_data.sh` covers all nine assemblies, including the mouse lemur GenArk
+files above. The hg38 CpG-island track (`cpgIslandExt`, used by `12_figures_final.py`
+for the CpG stratification figure) is fetched on demand instead, as are the
+human-only auxiliary sources in the table below. All are excluded from version
+control by size.
 
 > **Dog folder name.** `data/canFam4/` and `results/canFam4/` are named for historical
 > reasons; the data they hold is **ROS_Cfam_1.0 (UCSC canFam6)**. The two are

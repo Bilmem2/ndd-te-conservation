@@ -1,5 +1,5 @@
 #!/bin/bash
-# 00_download_data.sh — fetch genome GTF + RepeatMasker tracks for all 7 assemblies
+# 00_download_data.sh — fetch genome GTF + RepeatMasker tracks for all 9 assemblies
 # into the directory layout expected by scripts/02–05.
 #
 # The multi-GB raw files are intentionally NOT stored in the repo; this script
@@ -40,9 +40,9 @@ fetch() {
 echo "=== RepeatMasker (UCSC) ==="
 declare -A RMSK_ASM=(
   [hg38]=hg38 [ponAbe3]=ponAbe3 [nomLeu3]=nomLeu3 [rheMac10]=rheMac10
-  [calJac4]=calJac4 [mm10]=mm10 [canFam4]=canFam6
+  [calJac4]=calJac4 [saiBol1]=saiBol1 [mm10]=mm10 [canFam4]=canFam6
 )
-for folder in hg38 ponAbe3 nomLeu3 rheMac10 calJac4 mm10 canFam4; do
+for folder in hg38 ponAbe3 nomLeu3 rheMac10 calJac4 saiBol1 mm10 canFam4; do
     asm="${RMSK_ASM[$folder]}"
     echo "- $folder (UCSC $asm)"
     fetch "https://hgdownload.soe.ucsc.edu/goldenPath/$asm/database/rmsk.txt.gz" \
@@ -82,9 +82,34 @@ for folder in ponAbe3 nomLeu3 rheMac10 calJac4 canFam4; do
     fetch "$base$fname" "$DATA/$folder/gtf/$fname"
 done
 
+# ── saiBol1 GTF (fixed output name) ───────────────────────────────────────────
+# Handled outside the loop above: 39_squirrel_line1.py opens data/saiBol1/gtf/
+# saiBol1.gtf.gz by name, and SaiBol1.0 has no chromosome-level (*.112.chr.gtf.gz)
+# build, so the auto-discovery fallback would store a different filename.
+echo "=== GTF: Ensembl release 112 (squirrel monkey) ==="
+echo "- saiBol1 (Ensembl saimiri_boliviensis_boliviensis)"
+fetch "https://ftp.ensembl.org/pub/release-112/gtf/saimiri_boliviensis_boliviensis/Saimiri_boliviensis_boliviensis.SaiBol1.0.112.gtf.gz" \
+      "$DATA/saiBol1/gtf/saiBol1.gtf.gz"
+
+# ── mmur3: mouse lemur (UCSC GenArk, flat layout) ─────────────────────────────
+# Microcebus murinus has no UCSC goldenPath assembly, so its RepeatMasker track
+# comes from the GenArk hub for GCF_000165445.2 (Mmur_3.0) as repeatMasker.out.gz
+# rather than database/rmsk.txt.gz. Those coordinates carry RefSeq sequence names,
+# so chromAlias.txt is required to map them onto the Ensembl annotation. The
+# chromosome-level GTF (*.112.chr.gtf.gz) is the one used; 37_lemur_line1.py reads
+# all three from a flat data/mmur3/ directory, not the gtf/ + rmsk/ split.
+echo "=== mmur3: Ensembl GTF + UCSC GenArk RepeatMasker ==="
+GENARK="https://hgdownload.soe.ucsc.edu/hubs/GCF/000/165/445/GCF_000165445.2"
+echo "- mmur3 (Ensembl microcebus_murinus)"
+fetch "https://ftp.ensembl.org/pub/release-112/gtf/microcebus_murinus/Microcebus_murinus.Mmur_3.0.112.chr.gtf.gz" \
+      "$DATA/mmur3/mmur3.gtf.gz"
+echo "- mmur3 (GenArk GCF_000165445.2)"
+fetch "$GENARK/GCF_000165445.2.repeatMasker.out.gz" "$DATA/mmur3/repeatMasker.out.gz"
+fetch "$GENARK/GCF_000165445.2.chromAlias.txt"      "$DATA/mmur3/chromAlias.txt"
+
 echo ""
 echo "=== DONE ==="
-echo "Raw data written under: $DATA/<assembly>/{gtf,rmsk}/"
+echo "Raw data written under: $DATA/<assembly>/{gtf,rmsk}/ (mmur3 is flat: data/mmur3/)"
 echo "Next step: bash scripts/02_rmsk_to_bed.sh"
 
 # ── OPTIONAL auxiliary data (exploratory / confounder scripts) ────────────────
