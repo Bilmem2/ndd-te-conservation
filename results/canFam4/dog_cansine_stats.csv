@@ -1,0 +1,2 @@
+species,assembly,mya,TE,n_HK,n_NDD,median_HK,median_NDD,mean_HK,mean_NDD,p_value,r,sig
+Dog,ROS_Cfam_1.0,95,Can-SINE,1497,880,0.5,0.5,0.585,0.538,0.18967195811862453,-0.021,ns

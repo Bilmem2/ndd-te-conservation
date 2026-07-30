@@ -26,7 +26,7 @@ fetches them. Everything needed to regenerate the **statistics and figures** is 
 ## Repository layout
 
 ```
-scripts/     01–40, in pipeline order (see "Reproducing the analysis")
+scripts/     01–41, in pipeline order (see "Reproducing the analysis")
 data/
   gene_lists/    HighConfNDD (n=1020), Housekeeping (n=1679), Cardiovascular, Mendelian
   orthologs/     Ensembl BioMart 1:1 ortholog tables (committed; see note below)
@@ -192,6 +192,7 @@ python scripts/37_lemur_line1.py          # mouse lemur LINE-1
 python scripts/38_squirrel_ortholog.py    # squirrel monkey 1:1 ortholog control
 python scripts/39_squirrel_line1.py       # squirrel monkey LINE-1 (completes the panel)
 python scripts/40_gc_analysis.py          # promoter GC + GC-stratified depletion (Fig S4)
+python scripts/41_dog_cansine.py          # dog Can-SINE boundary test
 
 # 11   functional overlays
 python scripts/16_ccre_overlay.py
