@@ -203,6 +203,7 @@ python scripts/39_squirrel_line1.py       # squirrel monkey LINE-1 (completes th
 python scripts/40_gc_analysis.py          # promoter GC + GC-stratified depletion (Fig S4)
 python scripts/41_dog_cansine.py          # dog Can-SINE boundary test
 python scripts/42_coverage_robustness.py  # Alu as merged bp coverage, not record counts
+python scripts/43_flanking_control.py     # promoter vs flanking windows out to 250 kb
 
 # 11   functional overlays
 python scripts/16_ccre_overlay.py
