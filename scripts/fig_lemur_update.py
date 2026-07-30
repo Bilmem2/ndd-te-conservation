@@ -45,8 +45,13 @@ primates = [
     ("saiBol1", "Squirrel monkey\n(SaiBol1.0)", 40),
     ("mmur3", "Mouse lemur\n(Mmur_3.0)", 70),
 ]
-fig, axes = plt.subplots(1, len(primates), figsize=(3.5 * len(primates), 6),
-                         sharey=True)  # common scale: panels must be comparable by eye
+NCOL = 4
+NROW = -(-len(primates) // NCOL)
+fig, axgrid = plt.subplots(NROW, NCOL, figsize=(4.0 * NCOL, 4.6 * NROW),
+                           sharey=True)  # common scale: panels must be comparable by eye
+axes = axgrid.ravel()
+for extra in axes[len(primates):]:
+    extra.axis("off")
 for ax, (sp, label, mya) in zip(axes, primates):
     hk = dens(f"{RES}/{sp}/Housekeeping_Alu.bed")
     nd = dens(f"{RES}/{sp}/HighConfNDD_Alu.bed")
@@ -60,7 +65,7 @@ for ax, (sp, label, mya) in zip(axes, primates):
     add_sig(ax, 1, 2, (ymax if ymax > 0 else 1) * 1.18, p)
     ax.set_title(f"{label}\n~{mya} Mya", fontweight="bold", fontsize=10)
     ax.set_xticks([1, 2]); ax.set_xticklabels(["HK", "NDD"], fontsize=10)
-    if ax is axes[0]:
+    if ax in axgrid[:, 0]:
         ax.set_ylabel("Alu Frequency (count per kb)", fontsize=11)
     ax.text(0.5, -0.18, f"n={len(hk)}, {len(nd)}", transform=ax.transAxes,
             ha="center", fontsize=8, color="gray")
@@ -100,7 +105,7 @@ for i, (sp, label) in enumerate(sp_info):
     sig_mat.append(row)
 
 fig, ax = plt.subplots(figsize=(7, 7.5))
-im = ax.imshow(np.ma.masked_invalid(pmat), cmap="RdYlGn", aspect="auto", vmin=0, vmax=20)
+im = ax.imshow(np.ma.masked_invalid(pmat), cmap="viridis", aspect="auto", vmin=0, vmax=20)
 plt.colorbar(im, ax=ax, label="-log₁₀(p-value)  HK > NDD")
 ax.set_xticks([0, 1]); ax.set_xticklabels(["Alu / B1-B2\n(SINE)", "LINE-1"], fontsize=11)
 ax.set_yticks(range(n)); ax.set_yticklabels([s[1] for s in sp_info], fontsize=12, fontweight="bold")
@@ -111,7 +116,7 @@ for i in range(n):
             ax.text(j, i, "—", ha="center", va="center", fontsize=14, color="black")
         else:
             ax.text(j, i, sig_mat[i][j], ha="center", va="center", fontsize=8,
-                    color="white" if v > 10 else "black", fontweight="bold")
+                    color="white" if v < 12 else "black", fontweight="bold")
 plt.tight_layout()
 plt.savefig(f"{FIGS}/Fig3_Heatmap.pdf", dpi=300, bbox_inches="tight")
 plt.savefig(f"{FIGS}/Fig3_Heatmap.png", dpi=150, bbox_inches="tight")

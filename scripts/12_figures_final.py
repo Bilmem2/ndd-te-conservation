@@ -113,7 +113,12 @@ all_species = [
     ("canFam4",  "Dog",            95),
 ]
 
-fig, axes = plt.subplots(1, len(all_species), figsize=(28, 6), sharey=False)
+NCOL2 = 3
+NROW2 = -(-len(all_species) // NCOL2)
+fig, axgrid2 = plt.subplots(NROW2, NCOL2, figsize=(4.6 * NCOL2, 4.4 * NROW2), sharey=False)
+axes = axgrid2.ravel()
+for extra in axes[len(all_species):]:
+    extra.axis("off")
 for ax, (sp, label, mya) in zip(axes, all_species):
     hk  = get_density(f"{RESULTS}/{sp}/Housekeeping_LINE1.bed")
     ndd = get_density(f"{RESULTS}/{sp}/HighConfNDD_LINE1.bed")

@@ -34,7 +34,12 @@ def density(path):
 
 
 rng = np.random.default_rng(SEED)
-fig, axes = plt.subplots(1, 5, figsize=(20, 4.6))
+NCOL3 = 3
+NROW3 = -(-len(COMBOS) // NCOL3)
+fig, axgrid3 = plt.subplots(NROW3, NCOL3, figsize=(5.2 * NCOL3, 4.2 * NROW3))
+axes = axgrid3.ravel()
+for extra in axes[len(COMBOS):]:
+    extra.axis("off")
 
 for ax, (assembly, label, te) in zip(axes, COMBOS):
     hk = density(RESULTS / assembly / f"Housekeeping_{te}.bed")
