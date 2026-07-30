@@ -87,10 +87,11 @@ versioned INSDC accessions (`JH378105.1`) where UCSC uses the unversioned form, 
 suffix is stripped before matching.
 
 `00_download_data.sh` covers all nine assemblies, including the mouse lemur GenArk
-files above. The hg38 CpG-island track (`cpgIslandExt`, used by `12_figures_final.py`
-for the CpG stratification figure) is fetched on demand instead, as are the
-human-only auxiliary sources in the table below. All are excluded from version
-control by size.
+files above and `hg38.2bit`, from which promoter GC content is read directly. The
+hg38 CpG-island track (`cpgIslandExt`, used by `12_figures_final.py` for the CpG
+stratification figure) is fetched on demand instead, as are the human-only
+auxiliary sources in the table below. All are excluded from version control by
+size.
 
 > **Dog folder name.** `data/canFam4/` and `results/canFam4/` are named for historical
 > reasons; the data they hold is **ROS_Cfam_1.0 (UCSC canFam6)**. The two are
@@ -117,7 +118,7 @@ attributes, filtered to `ortholog_one2one`; the squirrel monkey prefix is
 | GTEx v8 median TPM by tissue | https://gtexportal.org |
 | gnomAD v4.1 constraint (LOEUF, pLI) | https://gnomad.broadinstitute.org |
 | ClinVar variant summary | https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/ |
-| hg38 CpG islands / 2bit | https://hgdownload.soe.ucsc.edu/goldenPath/hg38/ |
+| hg38 CpG islands (`cpgIslandExt`) | https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/ |
 | ENCODE SCREEN cCRE registry (GRCh38) | https://downloads.wenglab.org/Registry-V4/GRCh38-cCREs.bed |
 | ENCODE fetal DNase-seq | brain ENCFF955AQD, ENCFF631TDE, ENCFF670PXX; non-neural ENCFF667IEN, ENCFF362PZG, ENCFF016LYI |
 | Recombination map (GRCh38, deCODE-derived) | https://bochet.gcc.biostat.washington.edu/beagle/genetic_maps/ |

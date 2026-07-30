@@ -49,6 +49,15 @@ for folder in hg38 ponAbe3 nomLeu3 rheMac10 calJac4 saiBol1 mm10 canFam4; do
           "$DATA/$folder/rmsk/rmsk.txt.gz"
 done
 
+# ── hg38 genome sequence (UCSC bigZips) ───────────────────────────────────────
+# Promoter GC content is read straight off the 2bit with twobitreader rather than
+# via a FASTA, so this is a hard dependency of 18_matched_control.py,
+# 19_rebaseline.py, 27_constraint_matched.py, 32_matching_sensitivity.py,
+# 33_insertion_opportunity.py and 40_gc_analysis.py.
+echo "=== hg38 genome sequence ==="
+fetch "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.2bit" \
+      "$DATA/hg38/hg38.2bit"
+
 # ── GTF: GENCODE (human, mouse) ───────────────────────────────────────────────
 # Human filename MUST stay gencode.v47.gtf.gz — 09/10_*.py reference it directly.
 echo "=== GTF: GENCODE ==="
