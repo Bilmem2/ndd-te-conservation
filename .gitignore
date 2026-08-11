@@ -26,11 +26,6 @@ Thumbs.db
 *.swp
 
 # ── Private working files (not for publication) ──
-# Follow-up project planning. Names prospective supervisors who have not been
-# approached yet; must not reach the public repository.
-Wetlab_Proje_Plani_v*.md
-Hoca_Proje_Onerisi_Ozeti_v*.pdf
-Hoca_Proje_Onerisi_Ozeti_v*.md
 CLAUDE_PROJECT_BRIEF.md
 cover_letter_MGG.docx
 SINE_and_LINE_1_Depletion_at_NDD_Promoters_Article.pdf
