@@ -56,7 +56,9 @@ for name in ("HighConfNDD", "Housekeeping"):
     prom[name] = df
 
 pairs = pd.read_csv(ROOT / "results/matched/matched_pairs.tsv", sep="\t")
-print(f"eşleştirilmiş çift : {len(pairs)}")
+cpairs = pd.read_csv(ROOT / "results/matched/constraint_matched_pairs.tsv", sep="\t")
+print(f"bağlam-eşleştirilmiş çift    : {len(pairs)}   (GC, gen yoğunluğu, rekombinasyon)")
+print(f"kısıtlılık-eşleştirilmiş çift : {len(cpairs)}   (LOEUF, beyin ifadesi, GC)")
 
 # ── count insertions per promoter, per element class ───────────────────────
 idx = {c: {k: np.sort(g.pos.to_numpy()) for k, g in sub.groupby("chr")}
@@ -86,13 +88,32 @@ gc = dict(zip(pairs.ndd_gene, pairs.ndd_gc)) | dict(zip(pairs.matched_hk_gene, p
 for d in (ndd_m, hk_m):
     d["gc"] = d.gene.map(gc)
 
-print(f"eşleştirilmiş NDD  : {len(ndd_m)}   eşleştirilmiş HK : {len(hk_m)}")
+print(f"bağlam-eşleştirilmiş NDD {len(ndd_m)}, kontrol {len(hk_m)}")
 
-# ── test 1: density, all-HK versus matched-HK ──────────────────────────────
+# constraint-matched set: controls are drawn from all protein-coding genes,
+# so their promoter windows come from the pair table rather than the two
+# curated promoter BEDs, which between them cover only NDD and housekeeping.
+def frame(prefix):
+    d = cpairs[[f"{prefix}_gene", f"{prefix}_chrom", f"{prefix}_start",
+                f"{prefix}_end", f"{prefix}_gc"]].copy()
+    d.columns = ["gene", "chr", "start", "end", "gc"]
+    d["kb"] = (d.end - d.start) / 1000
+    for cls in CLASSES.values():
+        d[cls] = counts(d, cls)
+    d["SINE"] = d["Alu"] + d["SVA"]
+    return d
+
+
+ndd_c, ctl_c = frame("ndd"), frame("control")
+print(f"kısıtlılık-eşleştirilmiş NDD {len(ndd_c)}, kontrol {len(ctl_c)}"
+      f"   (kontrollerin {ctl_c.gene.isin(hk_all.gene).sum()} tanesi housekeeping)")
+
+# ── test 1: density under three control definitions ────────────────────────
 rows = []
 for cls in ("Alu", "SVA", "LINE1", "SINE"):
     for label, a, b in (("tüm housekeeping", hk_all, ndd_all),
-                        ("eşleştirilmiş kontrol", hk_m, ndd_m)):
+                        ("bağlam-eşleştirilmiş", hk_m, ndd_m),
+                        ("kısıtlılık-eşleştirilmiş", ctl_c, ndd_c)):
         dh, dn = (a[cls] / a.kb).to_numpy(), (b[cls] / b.kb).to_numpy()
         r, p = rank_biserial(dh, dn)
         rows.append(dict(karsilastirma=label, TE=cls, n_HK=len(a), n_NDD=len(b),
@@ -103,10 +124,10 @@ for cls in ("Alu", "SVA", "LINE1", "SINE"):
 
 res = pd.DataFrame(rows)
 print("\n=== YOĞUNLUK: tüm housekeeping vs eşleştirilmiş kontrol ===")
-print(f"{'karşılaştırma':<24}{'TE':<7}{'HK/kb':>9}{'NDD/kb':>9}{'NDD/HK':>9}{'r':>9}{'p':>11}")
-print("-" * 78)
+print(f"{'karşılaştırma':<27}{'TE':<7}{'HK/kb':>9}{'NDD/kb':>9}{'NDD/HK':>9}{'r':>9}{'p':>11}")
+print("-" * 81)
 for _, x in res.iterrows():
-    print(f"{x.karsilastirma:<24}{x.TE:<7}{x.dens_HK:>9.4f}{x.dens_NDD:>9.4f}"
+    print(f"{x.karsilastirma:<27}{x.TE:<7}{x.dens_HK:>9.4f}{x.dens_NDD:>9.4f}"
           f"{x.oran:>9.3f}{x.r:>9.3f}{x.p:>11.2g}")
 
 # ── test 2: GC-stratified, the detection-bias control ──────────────────────
@@ -134,7 +155,7 @@ for q in range(4):
           f"{dn.mean()/dh.mean() if dh.mean() else np.nan:>8.3f}{r:>8.3f}{p:>10.2g}")
 
 # ── test 3: full allele-frequency spectrum ─────────────────────────────────
-print("\n=== ALLEL FREKANS SPEKTRUMU (eşleştirilmiş kontrole karşı) ===")
+print("\n=== ALLEL FREKANS SPEKTRUMU (kısıtlılık-eşleştirilmiş kontrole karşı) ===")
 def insertions_in(df):
     keep = []
     for c, s, e in zip(df.chr, df.start, df.end):
@@ -144,7 +165,7 @@ def insertions_in(df):
     return pd.concat(keep) if keep else mei.iloc[:0]
 
 
-ins_ndd, ins_hk = insertions_in(ndd_m), insertions_in(hk_m)
+ins_ndd, ins_hk = insertions_in(ndd_c), insertions_in(ctl_c)
 BINS = [0, 1e-5, 1e-4, 1e-3, 1e-2, 1.0]
 LBL = ["≤1e-5", "1e-5–1e-4", "1e-4–1e-3", "1e-3–1e-2", ">1e-2"]
 afs = []
@@ -169,7 +190,7 @@ print("\n=== BOYUT EKSENİ (seçilim modeli büyükte daha güçlü tükenme ön
 print(f"{'TE':<7}{'yaklaşık bp':>12}{'NDD/HK oranı':>15}{'r':>9}{'p':>11}")
 print("-" * 56)
 for cls in ("Alu", "SVA", "LINE1"):
-    x = res[(res.TE == cls) & (res.karsilastirma == "eşleştirilmiş kontrol")].iloc[0]
+    x = res[(res.TE == cls) & (res.karsilastirma == "kısıtlılık-eşleştirilmiş")].iloc[0]
     print(f"{cls:<7}{APPROX_BP[cls]:>12}{x.oran:>15.3f}{x.r:>9.3f}{x.p:>11.2g}")
 
 res.to_csv(OUT / "matched_mei.csv", index=False)

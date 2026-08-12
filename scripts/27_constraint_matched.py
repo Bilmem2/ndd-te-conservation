@@ -214,6 +214,19 @@ def main():
     res.to_csv(OUT / "constraint_matched.csv", index=False)
     bal.to_csv(OUT / "constraint_matched_balance.csv", index=False)
 
+    # the pairs themselves, so downstream analyses can reuse this control set
+    pd.DataFrame({
+        "ndd_gene": ndm["gene"].values, "control_gene": ctrl["gene"].values,
+        "ndd_chrom": ndm["chrom"].values, "ndd_start": ndm["start"].values,
+        "ndd_end": ndm["end"].values,
+        "control_chrom": ctrl["chrom"].values, "control_start": ctrl["start"].values,
+        "control_end": ctrl["end"].values,
+        "ndd_loeuf": ndm["loeuf"].values, "control_loeuf": ctrl["loeuf"].values,
+        "ndd_brain_log": ndm["brain_log"].values,
+        "control_brain_log": ctrl["brain_log"].values,
+        "ndd_gc": ndm["gc"].values, "control_gc": ctrl["gc"].values,
+    }).to_csv(OUT / "constraint_matched_pairs.tsv", sep="\t", index=False)
+
     pd.set_option("display.width", 200)
     pd.set_option("display.max_columns", 20)
     print("\n=== Alu depletion against a constraint- and brain-expression-matched control ===")
