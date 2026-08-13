@@ -24,14 +24,3 @@ __pycache__/
 .DS_Store
 Thumbs.db
 *.swp
-
-# ── Private working files (not for publication) ──
-CLAUDE_PROJECT_BRIEF.md
-cover_letter_MGG.docx
-SINE_and_LINE_1_Depletion_at_NDD_Promoters_Article.pdf
-IGNORE Dosyaları/
-LITERATURE_REVIEW_PROMPT.md
-ChatGPT_deep-research-report.md
-Gemini Deep Literature Review and Novelty.txt
-Novelty_and_Scoop-Risk_Memo_SINE-Depletion_NDD-Promoters/
-manuscript/
