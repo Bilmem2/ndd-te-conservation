@@ -42,9 +42,8 @@ fetches them. Everything needed to regenerate the **statistics and figures** is 
 | `results/functional/`, `results/gnomad_mei/` | Exploratory analyses, not used as evidence |
 | `figures/` | One file per figure; the mapping is below |
 
-Each file is named for the number it carries in the submission: `Fig<n>` for the
-six figures inside the article, `ESM<n>` for those submitted separately as Online
-Resources. Online Resource 6 is supplementary text and has no figure.
+Each file is named for the number it carries in the submission. Online Resource 6
+is supplementary text and has no figure.
 
 | File | In the submission | Produced by | Content |
 |------|------------------|-------------|---------|
@@ -77,7 +76,7 @@ heatmap to the colour scale the review objected to.
 |---------|----------|--------|
 | Human | hg38, GENCODE v47 | https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_47/ |
 | Mouse | mm10, GENCODE vM25 | https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M25/ |
-| Orangutan, gibbon, macaque, marmoset, squirrel monkey, mouse lemur, dog | ponAbe3, nomLeu3, rheMac10, calJac4, SaiBol1.0, Mmur\_3.0, canFam6 | Ensembl release 112, `https://ftp.ensembl.org/pub/release-112/gtf/<species>/` |
+| Orangutan, gibbon, macaque, marmoset, squirrel monkey, mouse lemur, dog | ponAbe3, nomLeu3, rheMac10, calJac4, SaiBol1.0, Mmur\_3.0, canFam6 | Ensembl release 112, `https://ftp.ensembl.org/pub/release-112/gtf/` — `00_download_data.sh` maps each assembly to its Ensembl species directory |
 
 ### RepeatMasker
 
