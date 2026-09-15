@@ -150,10 +150,13 @@ RepeatMasker itself is never run — the pipeline parses pre-computed UCSC track
 
 ## Reproducing the analysis
 
-All scripts resolve paths relative to the repository root, so the pipeline runs from a
-fresh clone with no path edits. Because `results/`, `data/gene_lists/` and
-`data/orthologs/` are committed, **steps 6 onwards run without the multi-GB downloads**;
-steps 1–5 are only needed to rebuild the promoter and TE BED files from scratch.
+All scripts resolve paths relative to the repository root, so the pipeline runs
+from a fresh clone with no path edits. Because `results/`, `data/gene_lists/` and
+`data/orthologs/` are committed, **steps 1–5 are only needed to rebuild the
+promoter and TE BED files from scratch.** Later steps still read individual
+downloaded files — `hg38.2bit` for GC content, the gnomAD constraint table,
+ClinVar, the cCRE registry, the fetal DNase peaks, the recombination map, or the
+chain files for the syntenic transfer. `00_download_data.sh` fetches all of them.
 
 ```bash
 git clone https://github.com/Bilmem2/ndd-te-conservation.git
@@ -168,9 +171,8 @@ bash   scripts/03_get_promoters.sh
 bash   scripts/04_split_promoters.sh
 bash   scripts/05_intersect.sh
 
-# 6    core cross-species statistics and figures
+# 6    core cross-species statistics
 python scripts/11_stats_updated.py
-python scripts/12_figures_final.py
 python scripts/13_ortholog_analysis.py    # 1:1 ortholog validation
 
 # 7    promoter window sizes and cross-disease sets
@@ -232,22 +234,15 @@ python scripts/fig_phylo.py               # ESM 5
 python scripts/22_consolidate.py
 ```
 
-Exactly one script writes each figure, and `12_figures_final.py` must run before
-`fig_alu_primates.py`, `fig_heatmap_effect.py`, `fig_line1_esm1.py` and
-`fig_null_update.py` if it is run at all: it once wrote those four figures too,
-and although those writes are now commented out, keeping the order removes the
-question. `40_gc_analysis.py` in step 10 draws ESM 4.
+ESM 4 comes from `40_gc_analysis.py` in step 10.
 
-Not in the recipe: `06`, `07`, `08` and `17`, superseded by `11`, `16` and `23`;
-`14` and `44`, which produce the exploratory gnomAD mobile-element analysis that
-the manuscript reports but does not rely on; and `probe_*.py`, which are scratch
-checks.
-
-`06_statistics.py`, `07_pli_correlation.py`, `08_encode_overlap_v2.py`,
-`14_gnomad_mei.py`, `17_functional_consequence.py`, `probe_dosage.py` and
-`probe_subfamily.py` hold **exploratory analyses that are not used as evidence in the
-manuscript**. They are kept for provenance; the polymorphic-MEI decomposition is
-mentioned in the Discussion only as inconclusive.
+Eight scripts are not in the recipe and are kept for provenance.
+`06_statistics.py` and `08_encode_overlap_v2.py` are superseded by
+`11_stats_updated.py` and `16_ccre_overlay.py`. `07_pli_correlation.py`,
+`14_gnomad_mei.py`, `17_functional_consequence.py` and `44_mei_matched.py` are
+**exploratory and not used as evidence** — the polymorphic mobile-element
+decomposition they produce is mentioned in the Discussion only as inconclusive.
+`probe_*.py` are scratch checks.
 
 ---
 
