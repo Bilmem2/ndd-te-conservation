@@ -26,7 +26,7 @@ The ClinVar release is pinned to the dated monthly archive matching the vintage
 of the other gene-set resources, so this run differs from the published one in
 the filter alone and not in the underlying data.
 
-Inputs : data/clinvar_2026-05.txt.gz, data/gene_lists/{HighConfNDD,Housekeeping}_genes.txt
+Inputs : data/clinvar_variants.txt.gz, data/gene_lists/{HighConfNDD,Housekeeping}_genes.txt
          data/hg38/gtf/gencode.v47.gtf.gz, data/hg38/alu_rmsk.bed
 Output : results/cross_disease/cross_disease_strict.csv
          data/gene_lists/{Cardiovascular,Mendelian}_genes_strict.txt
@@ -49,7 +49,7 @@ OUT.mkdir(parents=True, exist_ok=True)
 
 # release is a command-line argument so the same code can be run against the
 # dated archive and against the current download, and the two compared
-CLINVAR = DATA / (sys.argv[1] if len(sys.argv) > 1 else "clinvar_2026-05.txt.gz")
+CLINVAR = DATA / (sys.argv[1] if len(sys.argv) > 1 else "clinvar_variants.txt.gz")
 CARDIO_TERMS = ["cardiomyopathy", "arrhythmia", "channelopathy",
                 "long QT", "Brugada", "heart failure"]
 MAIN = {f"chr{c}" for c in list(range(1, 23)) + ["X"]}
