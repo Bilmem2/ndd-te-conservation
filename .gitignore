@@ -9,7 +9,14 @@ data/calJac4/
 data/saiBol1/
 data/mmur3/
 data/mm10/
-data/canFam4/
+data/canFam6/
+
+# Large auxiliary downloads added for the revision. Fetched by 00_download_data.sh
+# except the liftOver binary in tools/, which is a platform-specific UCSC build.
+data/chains/
+data/clinvar_variants.txt.gz
+data/gnomad_constraint.tsv
+tools/
 
 # Manually-downloaded, registration-gated gene-set sources for 01_prepare_gene_lists.py
 data/sources/
