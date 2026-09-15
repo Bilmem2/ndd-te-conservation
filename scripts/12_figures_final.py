@@ -92,8 +92,10 @@ patches = [mpatches.Patch(color=COLORS[c], label=c.replace('HighConfNDD','NDD'),
 fig.legend(handles=patches, loc='lower center', ncol=2,
            bbox_to_anchor=(0.5,-0.02), frameon=False, fontsize=10)
 plt.tight_layout(rect=[0,0.05,1,0.95])
-plt.savefig(f"{FIGS}/Fig1_Alu_Primates.pdf", dpi=300, bbox_inches='tight')
-plt.savefig(f"{FIGS}/Fig1_Alu_Primates.png", dpi=150, bbox_inches='tight')
+# Superseded: Fig1_Alu_Primates is now produced by fig_alu_primates.py.
+# Re-enabling these two lines would revert it to the pre-revision version.
+# plt.savefig(f"{FIGS}/Fig1_Alu_Primates.pdf", dpi=300, bbox_inches='tight')
+# plt.savefig(f"{FIGS}/Fig1_Alu_Primates.png", dpi=150, bbox_inches='tight')
 plt.close()
 print("  Fig1 kaydedildi.")
 
@@ -110,7 +112,7 @@ all_species = [
     ("saiBol1",  "Squirrel monkey", 40),
     ("mmur3",    "Mouse lemur",    70),
     ("mm10",     "Mouse",          90),
-    ("canFam4",  "Dog",            95),
+    ("canFam6",  "Dog",            95),
 ]
 
 NCOL2 = 3
@@ -142,8 +144,10 @@ for ax, (sp, label, mya) in zip(axes, all_species):
 fig.legend(handles=patches, loc='lower center', ncol=2,
            bbox_to_anchor=(0.5,-0.02), frameon=False, fontsize=10)
 plt.tight_layout(rect=[0,0.05,1,0.95])
-plt.savefig(f"{FIGS}/Fig2_LINE1_Mammals.pdf", dpi=300, bbox_inches='tight')
-plt.savefig(f"{FIGS}/Fig2_LINE1_Mammals.png", dpi=150, bbox_inches='tight')
+# Superseded: ESM1_LINE1_Mammals is now produced by fig_line1_esm1.py.
+# Re-enabling these two lines would revert it to the pre-revision version.
+# plt.savefig(f"{FIGS}/ESM1_LINE1_Mammals.pdf", dpi=300, bbox_inches='tight')
+# plt.savefig(f"{FIGS}/ESM1_LINE1_Mammals.png", dpi=150, bbox_inches='tight')
 plt.close()
 print("  Fig2 kaydedildi.")
 
@@ -158,7 +162,7 @@ sp_info = [
     ("rheMac10", "Macaque",   "Alu",  "LINE-1"),
     ("calJac4",  "Marmoset",  "Alu",  "LINE-1"),
     ("mm10",     "Mouse",     None,   "LINE-1"),
-    ("canFam4",  "Dog",       None,   "LINE-1"),
+    ("canFam6",  "Dog",       None,   "LINE-1"),
 ]
 te_cols = ["Alu", "LINE-1"]
 sp_labels = [s[1] for s in sp_info]
@@ -202,8 +206,10 @@ for i in range(7):
                     fontsize=8, color=color, fontweight='bold')
 
 plt.tight_layout()
-plt.savefig(f"{FIGS}/Fig3_Heatmap.pdf", dpi=300, bbox_inches='tight')
-plt.savefig(f"{FIGS}/Fig3_Heatmap.png", dpi=150, bbox_inches='tight')
+# Superseded: Fig2_Heatmap is now produced by fig_heatmap_effect.py.
+# Re-enabling these two lines would revert it to the pre-revision version.
+# plt.savefig(f"{FIGS}/Fig2_Heatmap.pdf", dpi=300, bbox_inches='tight')
+# plt.savefig(f"{FIGS}/Fig2_Heatmap.png", dpi=150, bbox_inches='tight')
 plt.close()
 print("  Fig3 kaydedildi.")
 
@@ -248,8 +254,10 @@ for ax, (sp, label, te) in zip(axes, null_species):
     ax.legend(fontsize=8, loc='upper left')
 
 plt.tight_layout()
-plt.savefig(f"{FIGS}/Fig4_NullModel.pdf", dpi=300, bbox_inches='tight')
-plt.savefig(f"{FIGS}/Fig4_NullModel.png", dpi=150, bbox_inches='tight')
+# Superseded: ESM2_NullModel is now produced by fig_null_update.py.
+# Re-enabling these two lines would revert it to the pre-revision version.
+# plt.savefig(f"{FIGS}/ESM2_NullModel.pdf", dpi=300, bbox_inches='tight')
+# plt.savefig(f"{FIGS}/ESM2_NullModel.png", dpi=150, bbox_inches='tight')
 plt.close()
 print("  Fig4 kaydedildi.")
 
@@ -260,8 +268,8 @@ print("Fig5 çiziliyor...")
 cpg_bed = f"{DATA}/hg38/cpg_islands.bed"
 alu_bed = f"{DATA}/hg38/rmsk/Alu.bed"
 
-fig, axes = plt.subplots(1, 2, figsize=(12,6))
-for ax, (cpg_status, cpg_label) in zip(axes,
+fig, axes = plt.subplots(1, 2, figsize=(12,6), sharey=True)
+for ax, letter, (cpg_status, cpg_label) in zip(axes, "AB",
     [('with','CpG Island Present'), ('without','No CpG Island')]):
     plot_data = []
     ns = []
@@ -297,12 +305,17 @@ for ax, (cpg_status, cpg_label) in zip(axes,
     ax.set_xticks([1,2])
     ax.set_xticklabels(['Housekeeping','NDD'], fontsize=10)
     ax.set_ylabel('Alu Frequency (count per kb)' if ax==axes[0] else '')
+    # The stratum and its sample sizes were computed above but never drawn, so
+    # the caption promised panel titles the figure did not carry.
+    ax.set_title(f"{letter}   {cpg_label}\n"
+                 rf"$n_\mathrm{{HK}}$ = {ns[0]}, $n_\mathrm{{NDD}}$ = {ns[1]}",
+                 fontsize=11, fontweight='bold', loc='left')
+    ax.spines[['top','right']].set_visible(False)
 
-fig.legend(handles=patches, loc='lower center', ncol=2,
-           bbox_to_anchor=(0.5,-0.02), frameon=False, fontsize=10)
-plt.tight_layout(rect=[0,0.05,1,1])
-plt.savefig(f"{FIGS}/Fig5_CpG.pdf", dpi=300, bbox_inches='tight')
-plt.savefig(f"{FIGS}/Fig5_CpG.png", dpi=150, bbox_inches='tight')
+# The x-axis already names both groups, so a colour legend repeats it.
+plt.tight_layout()
+plt.savefig(f"{FIGS}/ESM3_CpG.pdf", dpi=300, bbox_inches='tight')
+plt.savefig(f"{FIGS}/ESM3_CpG.png", dpi=150, bbox_inches='tight')
 plt.close()
 print("  Fig5 kaydedildi.")
 

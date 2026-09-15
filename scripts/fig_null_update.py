@@ -38,10 +38,13 @@ NCOL3 = 3
 NROW3 = -(-len(COMBOS) // NCOL3)
 fig, axgrid3 = plt.subplots(NROW3, NCOL3, figsize=(5.2 * NCOL3, 4.2 * NROW3))
 axes = axgrid3.ravel()
-for extra in axes[len(COMBOS):]:
+# Five panels in a 3x2 grid leave one cell over. It carries the legend, so the
+# key is stated once instead of being redrawn inside every panel.
+spare = axes[len(COMBOS):]
+for extra in spare:
     extra.axis("off")
 
-for ax, (assembly, label, te) in zip(axes, COMBOS):
+for ax, letter, (assembly, label, te) in zip(axes, "ABCDE", COMBOS):
     hk = density(RESULTS / assembly / f"Housekeeping_{te}.bed")
     ndd = density(RESULTS / assembly / f"HighConfNDD_{te}.bed")
     _, obs_p = stats.mannwhitneyu(hk, ndd, alternative="greater")
@@ -56,20 +59,28 @@ for ax, (assembly, label, te) in zip(axes, COMBOS):
     emp_p = float(np.mean(perm_p <= obs_p))
     null_fpr = float(np.mean(perm_p < 0.05))
 
-    ax.hist(perm_p, bins=50, color="#4878CF", alpha=0.7, label="Random sets")
-    ax.axvline(obs_p, color="red", linestyle="--", linewidth=2, label="Observed NDD")
-    ax.set_xlabel("p-value", fontsize=10)
-    if ax is axes[0]:
+    ax.hist(perm_p, bins=50, color="#4878CF", alpha=0.75, label="Random gene sets")
+    ax.axvline(obs_p, color="red", linestyle="--", linewidth=2,
+               label="Observed NDD set")
+    ax.set_xlabel("$p$-value", fontsize=10)
+    if ax in (axes[0], axes[NCOL3]):
         ax.set_ylabel("Frequency", fontsize=10)
-    ax.set_title(f"{label} | {TE_LABEL[te]}", fontweight="bold", fontsize=11)
-    ax.text(0.97, 0.97, f"Emp. p={emp_p:.4f}\nNull FPR={null_fpr:.3f}",
-            transform=ax.transAxes, ha="right", va="top", fontsize=8,
-            bbox=dict(boxstyle="round", facecolor="lightyellow", alpha=0.8))
-    ax.legend(fontsize=8, loc="upper left")
+    ax.set_title(f"{letter}   {label} | {TE_LABEL[te]}", loc="left",
+                 fontweight="bold", fontsize=11)
+    ax.text(0.97, 0.97, f"empirical $p$ = {emp_p:.4f}\nnull FPR = {null_fpr:.3f}",
+            transform=ax.transAxes, ha="right", va="top", fontsize=8.5,
+            bbox=dict(boxstyle="round", facecolor="#FFFDF0", edgecolor="#DDD"))
+    ax.spines[["top", "right"]].set_visible(False)
     print(f"{label:10s} {te:5s} observed p={obs_p:.3e}  emp p={emp_p:.4f}  FPR={null_fpr:.3f}")
 
+if len(spare):
+    h, l = axes[0].get_legend_handles_labels()
+    spare[0].legend(h, l, frameon=False, fontsize=11, loc="center",
+                    title=f"{N_PERM:,} permutations\nper species",
+                    title_fontproperties={"weight": "bold", "size": 11})
+
 plt.tight_layout()
-plt.savefig(FIGS / "Fig4_NullModel.pdf", dpi=300, bbox_inches="tight")
-plt.savefig(FIGS / "Fig4_NullModel.png", dpi=150, bbox_inches="tight")
+plt.savefig(FIGS / "ESM2_NullModel.pdf", dpi=300, bbox_inches="tight")
+plt.savefig(FIGS / "ESM2_NullModel.png", dpi=150, bbox_inches="tight")
 plt.close()
 print("Fig4 regenerated with 5 panels.")

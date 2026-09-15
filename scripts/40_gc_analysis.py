@@ -8,7 +8,7 @@ explained by GC composition. Produces the supplementary GC figure.
 Inputs : data/hg38/hg38.2bit
          results/hg38/{HighConfNDD_Alu.bed, Housekeeping_Alu.bed}
 Outputs: results/hg38/gc_analysis.csv
-         figures/Fig6_GC_Analysis.{pdf,png}
+         figures/ESM4_GC_Analysis.{pdf,png}
 """
 from pathlib import Path
 
@@ -95,16 +95,47 @@ for d, lab in ((hk, "Housekeeping"), (nd, "HighConfNDD")):
 ax[0].set_xlabel("Promoter GC content")
 ax[0].set_ylabel("Density")
 ax[0].legend(frameon=False)
+ax[0].set_title("A   Promoter GC content", loc="left", fontweight="bold", fontsize=11)
 
-for d, lab in ((hk, "Housekeeping"), (nd, "HighConfNDD")):
-    ax[1].scatter(d.gc, d.density, s=6, alpha=0.25, color=COLORS[lab],
-                  label=lab.replace("HighConfNDD", "NDD"), edgecolors="none")
-ax[1].set_xlabel("Promoter GC content")
-ax[1].set_ylabel("Alu frequency (count per kb)")
-ax[1].legend(frameon=False, markerscale=3)
+# The right panel used to be a scatter of Alu frequency against GC content. Alu
+# frequency in a 4 kb window takes about a dozen distinct values, so the points
+# fell into horizontal stripes and the two groups overplotted into one mass: the
+# claim the panel exists to support, that the deficit holds at every GC level,
+# could not be read off it. The stratified comparison was already being computed
+# for the CSV, so it is drawn here instead.
+strata = [row for row in rows if row["stratum"] != "all"]
+xs = np.arange(len(strata))
+W = 0.36
+for off, (frame, lab) in ((-W / 2, (hk, "Housekeeping")), (+W / 2, (nd, "HighConfNDD"))):
+    means, errs = [], []
+    for lo, hi, lab_s in STRATA:
+        if not any(r["stratum"] == lab_s for r in strata):
+            continue
+        v = frame[(frame.gc >= lo) & (frame.gc < hi)].density
+        means.append(v.mean())
+        errs.append(1.96 * v.std(ddof=1) / np.sqrt(len(v)))
+    ax[1].bar(xs + off, means, W, yerr=errs, capsize=3, color=COLORS[lab],
+              edgecolor="black", linewidth=0.6,
+              label=lab.replace("HighConfNDD", "NDD"), zorder=2)
+
+top = max(b.get_height() for b in ax[1].patches)
+for x, row in zip(xs, strata):
+    ax[1].text(x, top * 1.23, f"$r$ = {row['alu_r']:+.3f}", ha="center", fontsize=9)
+    ax[1].text(x, top * 1.14, f"n = {row['n_HK']} / {row['n_NDD']}", ha="center",
+               fontsize=8, color="#666")
+ax[1].set_xticks(xs)
+ax[1].set_xticklabels([r["stratum"] for r in strata])
+ax[1].set_xlabel("Promoter GC content stratum")
+ax[1].set_ylabel("Mean Alu frequency (count per kb)")
+ax[1].set_title("B   Alu frequency within GC stratum", loc="left",
+                fontweight="bold", fontsize=11)
+ax[1].set_ylim(0, top * 1.34)
+ax[1].spines[["top", "right"]].set_visible(False)
+# The left panel already carries the colour key for both groups.
+ax[0].spines[["top", "right"]].set_visible(False)
 plt.tight_layout()
-plt.savefig(FIGS / "Fig6_GC_Analysis.pdf", dpi=300, bbox_inches="tight")
-plt.savefig(FIGS / "Fig6_GC_Analysis.png", dpi=150, bbox_inches="tight")
+plt.savefig(FIGS / "ESM4_GC_Analysis.pdf", dpi=300, bbox_inches="tight")
+plt.savefig(FIGS / "ESM4_GC_Analysis.png", dpi=150, bbox_inches="tight")
 plt.close()
 
 print("\n=== recomputed ===")

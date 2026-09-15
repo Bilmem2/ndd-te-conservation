@@ -26,7 +26,10 @@ prim = sine[sine["TE"] == "Alu"]
 rod = sine[sine["TE"] == "B1B2"]
 
 fig, ax = plt.subplots(figsize=(8, 5))
-ax.plot(prim["mya"], prim["r"], "o-", color="#E07B39", lw=1.2, ms=9,
+# No connecting line: joining the points draws a trajectory through time, which
+# is the reading the caption exists to deny. It also produced a vertical segment
+# between the two Platyrrhini, who sit at the same divergence time.
+ax.plot(prim["mya"], prim["r"], "o", color="#E07B39", ms=9,
         markeredgecolor="black", markeredgewidth=0.6,
         label="Primates (Alu, shared ancestry)")
 ax.plot(rod["mya"], rod["r"], "D", color="#5b53b0", ms=11,
@@ -46,7 +49,7 @@ ax.legend(fontsize=9, loc="lower left")
 ax.grid(alpha=0.25, ls=":")
 
 plt.tight_layout()
-plt.savefig(FIGS / "FigS5_PhyloEffect.pdf", dpi=300, bbox_inches="tight")
-plt.savefig(FIGS / "FigS5_PhyloEffect.png", dpi=150, bbox_inches="tight")
+plt.savefig(FIGS / "ESM5_PhyloEffect.pdf", dpi=300, bbox_inches="tight")
+plt.savefig(FIGS / "ESM5_PhyloEffect.png", dpi=150, bbox_inches="tight")
 plt.close()
-print("FigS5 saved:", sine[["label", "mya", "TE", "r"]].to_dict("records"))
+print("ESM5_PhyloEffect saved:", sine[["label", "mya", "TE", "r"]].to_dict("records"))

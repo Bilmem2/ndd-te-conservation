@@ -32,7 +32,7 @@ data/
   orthologs/     Ensembl BioMart 1:1 ortholog tables (committed; see note below)
 results/
   <assembly>/    per-species promoter BEDs with TE counts, one file per gene set and TE class
-                 (hg38, ponAbe3, nomLeu3, rheMac10, calJac4, saiBol1, mmur3, mm10, canFam4)
+                 (hg38, ponAbe3, nomLeu3, rheMac10, calJac4, saiBol1, mmur3, mm10, canFam6)
   consolidated/  master cross-species table, BH q-values, results backbone
   context/       gene density + recombination controls
   matched/       matched controls, genome baselines, matching sensitivity
@@ -44,22 +44,30 @@ results/
 figures/     see mapping below
 ```
 
-Figure files keep their original names; the second column is the number the figure
-carries in the manuscript, where five of the ten are supplementary and are submitted
-as Online Resources rather than inside the article.
+Each file is named for the number it carries in the submission: `Fig<n>` for the
+six figures inside the article, `ESM<n>` for those submitted separately as Online
+Resources. Online Resource 6 is supplementary text and has no figure.
 
-| File | Manuscript | Content |
-|------|-----------|---------|
-| `Fig1_Alu_Primates` | Fig 1 | Alu depletion across seven primates |
-| `Fig3_Heatmap` | Fig 2 | Significance heatmap, nine species × TE class |
-| `Fig7_ContextControls` | Fig 3 | Gene density, recombination, matched control |
-| `Fig8_cCRE` | Fig 4 | ENCODE cCRE overlay |
-| `Fig9_BrainSpecificity` | Fig 5 | Fetal-brain regulatory specificity |
-| `Fig2_LINE1_Mammals` | Fig S1 | LINE-1 across nine mammals |
-| `Fig4_NullModel` | Fig S2 | Permutation null model |
-| `Fig5_CpG` | Fig S3 | CpG island stratification |
-| `Fig6_GC_Analysis` | Fig S4 | Promoter GC content |
-| `FigS5_PhyloEffect` | Fig S5 | Effect size vs divergence time |
+| File | In the submission | Produced by | Content |
+|------|------------------|-------------|---------|
+| `Fig1_Alu_Primates` | Figure 1 | `fig_alu_primates.py` | Alu depletion across seven primates |
+| `Fig2_Heatmap` | Figure 2 | `fig_heatmap_effect.py` | Effect-size heatmap, nine genomes × TE class |
+| `Fig3_ContextControls` | Figure 3 | `fig_new.py` | Gene density, recombination, matched control |
+| `Fig4_cCRE` | Figure 4 | `fig_new.py` | ENCODE cCRE overlay |
+| `Fig5_BrainSpecificity` | Figure 5 | `fig_brain.py` | Fetal-brain regulatory specificity |
+| `Fig6_Flanking` | Figure 6 | `fig_flanking.py` | Promoter versus regional depletion |
+| `ESM1_LINE1_Mammals` | Online Resource 1 | `fig_line1_esm1.py` | SINE and LINE-1 density across nine genomes |
+| `ESM2_NullModel` | Online Resource 2 | `fig_null_update.py` | Permutation null model |
+| `ESM3_CpG` | Online Resource 3 | `12_figures_final.py` | CpG island stratification |
+| `ESM4_GC_Analysis` | Online Resource 4 | `40_gc_analysis.py` | Promoter GC content |
+| `ESM5_PhyloEffect` | Online Resource 5 | `fig_phylo.py` | Effect size vs divergence time |
+| `ESM7_Alu_Boxplots` | Online Resource 7 | (kept from the original submission) | Per-species Alu distributions |
+
+Exactly one script writes each figure. `12_figures_final.py` is the original
+monolithic figure script and once wrote four of these as well; those `savefig`
+calls are commented out, because running it in pipeline order otherwise reverted
+Figure 1 to a five-species boxplot from before the panel was extended and the
+heatmap to the colour scale the review objected to.
 
 ---
 
@@ -93,10 +101,11 @@ stratification figure) is fetched on demand instead, as are the human-only
 auxiliary sources in the table below. All are excluded from version control by
 size.
 
-> **Dog folder name.** `data/canFam4/` and `results/canFam4/` are named for historical
-> reasons; the data they hold is **ROS_Cfam_1.0 (UCSC canFam6)**. The two are
-> coordinate-compatible apart from the `chr` prefix that the promoter script adds, so the
-> name is cosmetic and is kept to preserve every path reference in the committed results.
+> **Dog assembly.** `data/canFam6/` and `results/canFam6/` hold **ROS_Cfam_1.0
+> (UCSC canFam6)**, the assembly the directory is named for. Earlier revisions of
+> this repository stored the same data under a `canFam4` directory name, which did
+> not match its contents; the directories were renamed and every path reference
+> updated.
 
 ### Ortholog tables
 
