@@ -26,18 +26,23 @@ fetches them. Everything needed to regenerate the **statistics and figures** is 
 ## Repository layout
 
 ```
-scripts/     01–41, in pipeline order (see "Reproducing the analysis")
+scripts/     00–49 in pipeline order (see "Reproducing the analysis"), plus
+             fig_*.py, which draw the figures, and probe_*.py, exploratory
 data/
-  gene_lists/    HighConfNDD (n=1020), Housekeeping (n=1679), Cardiovascular, Mendelian
+  gene_lists/    HighConfNDD (n=1020), Housekeeping (n=1679), and the ClinVar
+                 sets in two versions: Cardiovascular/Mendelian_genes.txt from a
+                 substring match, and the _strict.txt files the manuscript uses,
+                 built by the explicit P/LP rule in 48_cross_disease_strict.py
   orthologs/     Ensembl BioMart 1:1 ortholog tables (committed; see note below)
 results/
   <assembly>/    per-species promoter BEDs with TE counts, one file per gene set and TE class
                  (hg38, ponAbe3, nomLeu3, rheMac10, calJac4, saiBol1, mmur3, mm10, canFam6)
   consolidated/  master cross-species table, BH q-values, results backbone
   context/       gene density + recombination controls
-  matched/       matched controls, genome baselines, matching sensitivity
+  matched/       matched controls, genome baselines, matching sensitivity, paired tests
   mechanism/     insertion opportunity, orientation, subfamily age
   sensitivity/   promoter window, canonical TSS, promoter non-independence
+  synteny/       promoter windows transferred between genomes by liftOver
   ccre/ brain/   ENCODE cCRE and fetal-brain DNase overlays
   cross_disease/ ClinVar comparison sets
   functional/ gnomad_mei/   exploratory analyses, not used as evidence
@@ -206,7 +211,7 @@ python scripts/36_loeuf_gradient.py       # Alu density across LOEUF deciles
 python scripts/37_lemur_line1.py          # mouse lemur LINE-1
 python scripts/38_squirrel_ortholog.py    # squirrel monkey 1:1 ortholog control
 python scripts/39_squirrel_line1.py       # squirrel monkey LINE-1 (completes the panel)
-python scripts/40_gc_analysis.py          # promoter GC + GC-stratified depletion (Fig S4)
+python scripts/40_gc_analysis.py          # promoter GC + GC-stratified depletion (ESM 4)
 python scripts/41_dog_cansine.py          # dog Can-SINE boundary test
 python scripts/42_coverage_robustness.py  # Alu as merged bp coverage, not record counts
 python scripts/43_flanking_control.py     # promoter vs flanking windows out to 250 kb
@@ -215,14 +220,36 @@ python scripts/43_flanking_control.py     # promoter vs flanking windows out to 
 python scripts/16_ccre_overlay.py
 python scripts/23_brain_overlay.py
 
-# 12   figures and consolidation
-python scripts/fig_lemur_update.py        # Fig 1, Fig 2
-python scripts/fig_null_update.py         # Fig S2
+# 12   analyses added for the revision
+python scripts/45_promoter_vs_local.py    # promoter against its own regional background
+python scripts/46_paired_matched_tests.py # Wilcoxon, sign-flip permutation, Kerby r
+python scripts/47_line1_floor.py          # is an Alu-sized deficit detectable at LINE-1 density
+python scripts/48_cross_disease_strict.py # explicit P/LP rule for the ClinVar sets
+python scripts/49_syntenic_promoters.py   # liftOver transfer; needs tools/liftOver + chain files
+
+# 13   figures and consolidation
+python scripts/fig_alu_primates.py        # Fig 1
+python scripts/fig_heatmap_effect.py      # Fig 2
 python scripts/fig_new.py                 # Fig 3, Fig 4
 python scripts/fig_brain.py               # Fig 5
-python scripts/fig_phylo.py               # Fig S5
+python scripts/fig_flanking.py            # Fig 6
+python scripts/fig_line1_esm1.py          # ESM 1
+python scripts/fig_null_update.py         # ESM 2
+python scripts/12_figures_final.py        # ESM 3
+python scripts/fig_phylo.py               # ESM 5
 python scripts/22_consolidate.py
 ```
+
+Exactly one script writes each figure, and `12_figures_final.py` must run before
+`fig_alu_primates.py`, `fig_heatmap_effect.py`, `fig_line1_esm1.py` and
+`fig_null_update.py` if it is run at all: it once wrote those four figures too,
+and although those writes are now commented out, keeping the order removes the
+question. `40_gc_analysis.py` in step 10 draws ESM 4.
+
+Not in the recipe: `06`, `07`, `08` and `17`, superseded by `11`, `16` and `23`;
+`14` and `44`, which produce the exploratory gnomAD mobile-element analysis that
+the manuscript reports but does not rely on; and `probe_*.py`, which are scratch
+checks.
 
 `06_statistics.py`, `07_pli_correlation.py`, `08_encode_overlap_v2.py`,
 `14_gnomad_mei.py`, `17_functional_consequence.py`, `probe_dosage.py` and
