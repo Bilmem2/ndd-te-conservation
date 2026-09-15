@@ -14,7 +14,7 @@ species = {
     "rheMac10": {"label": "Macaque",   "mya": 25, "alu": True},
     "calJac4":  {"label": "Marmoset",  "mya": 40, "alu": True},
     "mm10":     {"label": "Mouse",     "mya": 90, "alu": False},
-    "canFam4":  {"label": "Dog",       "mya": 95, "alu": False},
+    "canFam6":  {"label": "Dog",       "mya": 95, "alu": False},
 }
 
 def get_density(filepath):

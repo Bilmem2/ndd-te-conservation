@@ -13,7 +13,7 @@ species = {
     "calJac4":  {"label": "Marmoset",  "line1": True, "alu": True},
     "ponAbe3":  {"label": "Orangutan", "line1": True, "alu": True},
     "mm10":     {"label": "Mouse",     "line1": True, "alu": False},
-    "canFam4":  {"label": "Dog",       "line1": True, "alu": False},
+    "canFam6":  {"label": "Dog",       "line1": True, "alu": False},
 }
 
 categories = ["HighConfNDD", "Housekeeping"]

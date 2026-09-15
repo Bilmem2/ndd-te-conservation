@@ -26,19 +26,19 @@ species = {
     "rheMac10": "mmulatta",
     "calJac4":  "cjacchus",
     "mm10":     "mmusculus",
-    "canFam4":  "clfamiliaris",
+    "canFam6":  "clfamiliaris",
 }
 
 sp_labels = {
     "ponAbe3": "Orangutan", "nomLeu3": "Gibbon",
     "rheMac10": "Macaque",  "calJac4": "Marmoset",
-    "mm10": "Mouse",        "canFam4": "Dog",
+    "mm10": "Mouse",        "canFam6": "Dog",
 }
 
 te_map = {
     "ponAbe3": ["Alu", "LINE1"], "nomLeu3": ["Alu", "LINE1"],
     "rheMac10": ["Alu", "LINE1"], "calJac4": ["Alu", "LINE1"],
-    "mm10": ["LINE1"], "canFam4": ["LINE1"],
+    "mm10": ["LINE1"], "canFam6": ["LINE1"],
 }
 
 def get_density(filepath):

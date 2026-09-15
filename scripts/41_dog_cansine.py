@@ -13,9 +13,9 @@ Method matches the main analysis: Can-SINE count per kb at TSS +/-2 kb,
 HighConfNDD versus Housekeeping, one-sided Mann-Whitney U (HK > NDD),
 rank-biserial r. Promoter windows are taken from the committed dog BEDs.
 
-Inputs : data/canFam4/rmsk/rmsk.txt.gz
-         results/canFam4/{HighConfNDD_LINE1.bed, Housekeeping_LINE1.bed}
-Output : results/canFam4/{HighConfNDD_CanSINE.bed, Housekeeping_CanSINE.bed,
+Inputs : data/canFam6/rmsk/rmsk.txt.gz
+         results/canFam6/{HighConfNDD_LINE1.bed, Housekeeping_LINE1.bed}
+Output : results/canFam6/{HighConfNDD_CanSINE.bed, Housekeeping_CanSINE.bed,
                           dog_cansine_stats.csv}
 """
 import gzip
@@ -26,13 +26,13 @@ import pandas as pd
 from scipy import stats
 
 ROOT = Path(__file__).resolve().parent.parent
-RES = ROOT / "results" / "canFam4"
+RES = ROOT / "results" / "canFam6"
 COLS = ["chrom", "start", "end", "gene", "score", "strand", "n"]
 
 
 def load_cansine():
     rows = []
-    with gzip.open(ROOT / "data" / "canFam4" / "rmsk" / "rmsk.txt.gz", "rt") as fh:
+    with gzip.open(ROOT / "data" / "canFam6" / "rmsk" / "rmsk.txt.gz", "rt") as fh:
         for line in fh:
             f = line.split("\t")
             if len(f) > 12 and f[11] == "SINE" and f[12] == "tRNA":

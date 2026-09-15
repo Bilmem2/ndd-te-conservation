@@ -5,7 +5,7 @@ BASE="$REPO_ROOT/data"
 RESULTS="$REPO_ROOT/results"
 mkdir -p $RESULTS
 
-for SP in hg38 ponAbe3 nomLeu3 rheMac10 calJac4 mm10 canFam4; do
+for SP in hg38 ponAbe3 nomLeu3 rheMac10 calJac4 mm10 canFam6; do
     echo "=== $SP ==="
     OUT=$RESULTS/$SP
     mkdir -p $OUT
@@ -19,7 +19,7 @@ for SP in hg38 ponAbe3 nomLeu3 rheMac10 calJac4 mm10 canFam4; do
         echo "  $CAT LINE1: done"
 
         # Alu: sadece primatlar
-        if [[ "$SP" != "mm10" && "$SP" != "canFam4" ]]; then
+        if [[ "$SP" != "mm10" && "$SP" != "canFam6" ]]; then
             bedtools intersect -a $PROM -b $BASE/$SP/rmsk/Alu.bed -c \
                 > $OUT/${CAT}_Alu.bed
             echo "  $CAT Alu: done"

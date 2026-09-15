@@ -4,7 +4,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 BASE="$REPO_ROOT/data"
 WINDOW=2000
 
-for SP in hg38 ponAbe3 nomLeu3 rheMac10 calJac4 mm10 canFam4; do
+for SP in hg38 ponAbe3 nomLeu3 rheMac10 calJac4 mm10 canFam6; do
     echo "=== $SP ==="
     # Dosyayı bul, bulamazsa donmak yerine hata verip atla
     GTF_GZ=$(ls $BASE/$SP/gtf/*.gtf.gz 2>/dev/null)
