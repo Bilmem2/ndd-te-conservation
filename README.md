@@ -25,30 +25,22 @@ fetches them. Everything needed to regenerate the **statistics and figures** is 
 
 ## Repository layout
 
-```
-scripts/     00–49 in pipeline order (see "Reproducing the analysis"), plus
-             fig_*.py, which draw the figures, and probe_*.py, exploratory
-data/
-  gene_lists/    HighConfNDD (n=1020), Housekeeping (n=1679), and the ClinVar
-                 sets in two versions: Cardiovascular/Mendelian_genes.txt from a
-                 substring match, and the _strict.txt files the manuscript uses,
-                 built by the explicit P/LP rule in 48_cross_disease_strict.py
-  orthologs/     Ensembl BioMart 1:1 ortholog tables (committed; see note below)
-results/
-  hg38/ ponAbe3/ nomLeu3/ rheMac10/ calJac4/ saiBol1/ mmur3/ mm10/ canFam6/
-                 one directory per assembly: promoter BEDs with TE counts, one
-                 file per gene set and TE class
-  consolidated/  master cross-species table, BH q-values, results backbone
-  context/       gene density + recombination controls
-  matched/       matched controls, genome baselines, matching sensitivity, paired tests
-  mechanism/     insertion opportunity, orientation, subfamily age
-  sensitivity/   promoter window, canonical TSS, promoter non-independence
-  synteny/       promoter windows transferred between genomes by liftOver
-  ccre/ brain/   ENCODE cCRE and fetal-brain DNase overlays
-  cross_disease/ ClinVar comparison sets
-  functional/ gnomad_mei/   exploratory analyses, not used as evidence
-figures/     see mapping below
-```
+| Path | Contents |
+|------|----------|
+| `scripts/` | `00`–`49` run in pipeline order; `fig_*.py` draw the figures; `probe_*.py` are scratch checks |
+| `data/gene_lists/` | HighConfNDD (n = 1020) and Housekeeping (n = 1679), plus the ClinVar disease sets in a loose and a strict version — the manuscript uses the strict ones |
+| `data/orthologs/` | Ensembl BioMart 1:1 ortholog tables, committed on purpose (see below) |
+| `results/` — one per assembly | `hg38`, `ponAbe3`, `nomLeu3`, `rheMac10`, `calJac4`, `saiBol1`, `mmur3`, `mm10`, `canFam6`: promoter BEDs with TE counts, one file per gene set and element class |
+| `results/consolidated/` | Master cross-species table, BH *q*-values |
+| `results/context/` | Gene density and recombination controls |
+| `results/matched/` | Matched controls, genome baselines, matching sensitivity, paired tests |
+| `results/mechanism/` | Insertion opportunity, orientation, subfamily age |
+| `results/sensitivity/` | Promoter window size, canonical TSS, promoter non-independence |
+| `results/synteny/` | Promoter windows transferred between genomes by liftOver |
+| `results/ccre/`, `results/brain/` | ENCODE cCRE and fetal-brain DNase overlays |
+| `results/cross_disease/` | ClinVar comparison sets |
+| `results/functional/`, `results/gnomad_mei/` | Exploratory analyses, not used as evidence |
+| `figures/` | One file per figure; the mapping is below |
 
 Each file is named for the number it carries in the submission: `Fig<n>` for the
 six figures inside the article, `ESM<n>` for those submitted separately as Online
