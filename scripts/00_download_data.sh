@@ -34,19 +34,13 @@ fetch() {
 }
 
 # ── RepeatMasker (UCSC goldenPath) ────────────────────────────────────────────
-# folder -> UCSC assembly. NB: dog data lives under data/canFam4/ for historical
-# reasons but is actually ROS_Cfam_1.0 == UCSC canFam6 (coordinate-compatible;
-# see README note). The folder name is kept as-is to preserve all path references.
+# Each data directory is named for the UCSC assembly it holds. The mouse lemur
+# is absent here: its RepeatMasker track comes from the GenArk hub instead.
 echo "=== RepeatMasker (UCSC) ==="
-declare -A RMSK_ASM=(
-  [hg38]=hg38 [ponAbe3]=ponAbe3 [nomLeu3]=nomLeu3 [rheMac10]=rheMac10
-  [calJac4]=calJac4 [saiBol1]=saiBol1 [mm10]=mm10 [canFam4]=canFam6
-)
-for folder in hg38 ponAbe3 nomLeu3 rheMac10 calJac4 saiBol1 mm10 canFam4; do
-    asm="${RMSK_ASM[$folder]}"
-    echo "- $folder (UCSC $asm)"
+for asm in hg38 ponAbe3 nomLeu3 rheMac10 calJac4 saiBol1 mm10 canFam6; do
+    echo "- $asm"
     fetch "https://hgdownload.soe.ucsc.edu/goldenPath/$asm/database/rmsk.txt.gz" \
-          "$DATA/$folder/rmsk/rmsk.txt.gz"
+          "$DATA/$asm/rmsk/rmsk.txt.gz"
 done
 
 # ── hg38 genome sequence (UCSC bigZips) ───────────────────────────────────────
@@ -75,9 +69,9 @@ fetch "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M25/gen
 echo "=== GTF: Ensembl release 112 ==="
 declare -A ENS_DIR=(
   [ponAbe3]=pongo_abelii [nomLeu3]=nomascus_leucogenys [rheMac10]=macaca_mulatta
-  [calJac4]=callithrix_jacchus [canFam4]=canis_lupus_familiaris
+  [calJac4]=callithrix_jacchus [canFam6]=canis_lupus_familiaris
 )
-for folder in ponAbe3 nomLeu3 rheMac10 calJac4 canFam4; do
+for folder in ponAbe3 nomLeu3 rheMac10 calJac4 canFam6; do
     sp="${ENS_DIR[$folder]}"
     base="https://ftp.ensembl.org/pub/release-112/gtf/$sp/"
     echo "- $folder (Ensembl $sp)"
@@ -119,12 +113,79 @@ fetch "$GENARK/GCF_000165445.2.chromAlias.txt"      "$DATA/mmur3/chromAlias.txt"
 echo ""
 echo "=== DONE ==="
 echo "Raw data written under: $DATA/<assembly>/{gtf,rmsk}/ (mmur3 is flat: data/mmur3/)"
-echo "Next step: bash scripts/02_rmsk_to_bed.sh"
+echo "Genomes and annotations complete."
 
-# ── OPTIONAL auxiliary data (exploratory / confounder scripts) ────────────────
-# Not downloaded automatically (version-specific and/or require local processing).
-# See README for sources:
-#   • ClinVar  variant_summary.txt.gz  -> data/clinvar_variants.txt.gz   (10_cross_disease.py)
-#   • UCSC CpG islands (cpgIslandExt)   -> data/hg38/cpg_islands.bed      (12_figures_final.py, Fig 5)
-#   • gnomAD v4.1 constraint            -> data/gnomad_constraint.tsv     (07_pli_correlation.py)
-#   • ENCODE CTCF / brain DNase         -> data/hg38/{ctcf_peaks.bed,brain_dnase.bed.gz} (08_encode_overlap_v2.py)
+# ── Auxiliary resources (confounder controls, matched controls, figures) ──────
+# Required by 12, 15, 16 and 27. URLs verified 2026-09-10.
+echo ""
+echo "=== Auxiliary resources ==="
+
+# gnomAD v4.1 gene constraint (LOEUF = lof.oe_ci.upper, pLI = lof.pLI), ~95 MB.
+# NB the bucket path is release/4.1/, not release/v4.1/.
+GNOMAD_URL="https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/constraint/gnomad.v4.1.constraint_metrics.tsv"
+fetch "$GNOMAD_URL" "$DATA/hg38/gnomad_constraint.tsv"
+# 07_pli_correlation.py expects it one level up; link rather than fetch twice.
+if [[ -s "$DATA/hg38/gnomad_constraint.tsv" && ! -s "$DATA/gnomad_constraint.tsv" ]]; then
+    cp "$DATA/hg38/gnomad_constraint.tsv" "$DATA/gnomad_constraint.tsv"
+    echo "  copy -> gnomad_constraint.tsv (path expected by 07)"
+fi
+
+# GTEx v8 median TPM by tissue, ~7 MB. Bucket moved to adult-gtex.
+fetch "https://storage.googleapis.com/adult-gtex/bulk-gex/v8/rna-seq/GTEx_Analysis_2017-06-05_v8_RNASeQCv1.1.9_gene_median_tpm.gct.gz" \
+      "$DATA/hg38/gtex_gene_median_tpm.gct.gz"
+
+# ClinVar variant summary, ~442 MB. 10_cross_disease.py reads it from data/.
+fetch "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/variant_summary.txt.gz" \
+      "$DATA/clinvar_variants.txt.gz"
+
+# ENCODE SCREEN Registry V4 candidate cis-regulatory elements, ~129 MB.
+fetch "https://downloads.wenglab.org/Registry-V4/GRCh38-cCREs.bed" \
+      "$DATA/hg38/GRCh38-cCREs.bed"
+
+# UCSC CpG islands (cpgIslandExt). Downloaded gzipped, then cut to BED.
+fetch "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cpgIslandExt.txt.gz" \
+      "$DATA/hg38/cpgIslandExt.txt.gz"
+if [[ -s "$DATA/hg38/cpgIslandExt.txt.gz" && ! -s "$DATA/hg38/cpg_islands.bed" ]]; then
+    echo "  build cpg_islands.bed"
+    gunzip -c "$DATA/hg38/cpgIslandExt.txt.gz" \
+        | awk 'BEGIN{OFS="\t"} {print $2, $3, $4, $5}' > "$DATA/hg38/cpg_islands.bed"
+fi
+
+# Beagle GRCh38 genetic maps (sex-averaged cM/Mb), ~47 MB zipped.
+# 15_context_controls.py globs recomb/chr_in_chrom_field/plink.chrchr*.GRCh38.map
+fetch "https://bochet.gcc.biostat.washington.edu/beagle/genetic_maps/plink.GRCh38.map.zip" \
+      "$DATA/hg38/recomb/plink.GRCh38.map.zip"
+RECOMB_DIR="$DATA/hg38/recomb/chr_in_chrom_field"
+if [[ -s "$DATA/hg38/recomb/plink.GRCh38.map.zip" ]] \
+   && ! compgen -G "$RECOMB_DIR/plink.chrchr*.GRCh38.map" >/dev/null; then
+    echo "  unpack genetic maps"
+    mkdir -p "$RECOMB_DIR"
+    if command -v unzip >/dev/null 2>&1; then
+        unzip -o -q -j "$DATA/hg38/recomb/plink.GRCh38.map.zip" -d "$RECOMB_DIR"
+    else
+        python -c "import zipfile,sys; zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])" \
+               "$DATA/hg38/recomb/plink.GRCh38.map.zip" "$RECOMB_DIR"
+    fi
+    # the archive ships plink.chr<N>.GRCh38.map; the loader expects chrchr<N>
+    for f in "$RECOMB_DIR"/plink.chr[0-9XY]*.GRCh38.map; do
+        [[ -e "$f" ]] || continue
+        base="$(basename "$f")"
+        case "$base" in
+            plink.chrchr*) continue ;;
+        esac
+        mv "$f" "$RECOMB_DIR/plink.chrchr${base#plink.chr}"
+    done
+fi
+
+echo ""
+echo "=== DONE (auxiliary) ==="
+
+# ── STILL MANUAL ─────────────────────────────────────────────────────────────
+# ENCODE CTCF / fetal-brain DNase peak sets used by 08_encode_overlap_v2.py are
+# accession-specific and must be pulled from the ENCODE portal by hand:
+#   ENCFF955AQD ENCFF631TDE ENCFF670PXX ENCFF667IEN ENCFF362PZG ENCFF016LYI
+#   -> data/hg38/{ctcf_peaks.bed, brain_dnase.bed.gz}
+# 08 is an exploratory script and is not required to reproduce the manuscript.
+
+echo ""
+echo "Next step: bash scripts/02_rmsk_to_bed.sh"

@@ -1,0 +1,4 @@
+analysis,n_NDD,n_HK,mean_NDD,mean_HK,ratio,genome_mean,r,p,thin_keep_p,n_draws,r_iqr_low,r_iqr_high,frac_p_below_05
+observed Alu,1025,1714,0.3829,0.6658,0.5751,0.4949,-0.3446,1.2685434286307564e-53,,,,,
+observed LINE1,1025,1714,0.1134,0.1354,0.8379,0.1479,-0.049,0.003718978170547935,,,,,
+Alu thinned to LINE-1 density,1025,1714,,,,,-0.1751,9.804530248933781e-20,0.2271,400.0,-0.1846,-0.1646,1.0
