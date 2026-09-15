@@ -101,11 +101,8 @@ stratification figure) is fetched on demand instead, as are the human-only
 auxiliary sources in the table below. All are excluded from version control by
 size.
 
-> **Dog assembly.** `data/canFam6/` and `results/canFam6/` hold **ROS_Cfam_1.0
-> (UCSC canFam6)**, the assembly the directory is named for. Earlier revisions of
-> this repository stored the same data under a `canFam4` directory name, which did
-> not match its contents; the directories were renamed and every path reference
-> updated.
+> **Dog.** Ensembl's `ROS_Cfam_1.0` and UCSC's `canFam6` are the same assembly.
+> The repository uses `canFam6` throughout.
 
 ### Ortholog tables
 
