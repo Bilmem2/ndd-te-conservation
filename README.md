@@ -35,8 +35,9 @@ data/
                  built by the explicit P/LP rule in 48_cross_disease_strict.py
   orthologs/     Ensembl BioMart 1:1 ortholog tables (committed; see note below)
 results/
-  <assembly>/    per-species promoter BEDs with TE counts, one file per gene set and TE class
-                 (hg38, ponAbe3, nomLeu3, rheMac10, calJac4, saiBol1, mmur3, mm10, canFam6)
+  hg38/ ponAbe3/ nomLeu3/ rheMac10/ calJac4/ saiBol1/ mmur3/ mm10/ canFam6/
+                 one directory per assembly: promoter BEDs with TE counts, one
+                 file per gene set and TE class
   consolidated/  master cross-species table, BH q-values, results backbone
   context/       gene density + recombination controls
   matched/       matched controls, genome baselines, matching sensitivity, paired tests
@@ -88,7 +89,7 @@ heatmap to the colour scale the review objected to.
 
 ### RepeatMasker
 
-`https://hgdownload.soe.ucsc.edu/goldenPath/{assembly}/database/rmsk.txt.gz` for
+`https://hgdownload.soe.ucsc.edu/goldenPath/<assembly>/database/rmsk.txt.gz` for
 `hg38`, `ponAbe3`, `nomLeu3`, `rheMac10`, `calJac4`, `saiBol1`, `mm10`, `canFam6`.
 
 The **mouse lemur** track comes instead from the UCSC GenArk hub
