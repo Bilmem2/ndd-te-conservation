@@ -241,5 +241,3 @@ If you use this code or the derived gene sets, please cite:
 
 > Sevilmiş, C. Conserved SINE and Lineage-Variable LINE-1 Depletion at
 > Neurodevelopmental Disorder Promoters. Manuscript under review (2026).
-
-Raw annotations remain subject to the terms of their original providers.
