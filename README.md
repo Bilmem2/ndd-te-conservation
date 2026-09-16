@@ -108,7 +108,7 @@ the squirrel monkey prefix is `sbboliviensis`.
 |---------|--------|
 | SFARI Gene 2.0 (Tier 1+2) | https://sfari.org/resource/sfari-gene |
 | ClinGen Epilepsy GCEP | https://search.clinicalgenome.org/kb/affiliate/40005 |
-| HPO term gene lists (HP:0000729, HP:0001249, HP:0001250, HP:0007018) | https://hpo.jax.org — or `https://ontology.jax.org/api/network/annotation/HP%3A<id>/download/gene` |
+| HPO term gene lists (HP:0000729, HP:0001249, HP:0001250, HP:0007018) | https://hpo.jax.org |
 | HRT Atlas v1.0 (housekeeping) | https://housekeeping.unicamp.br |
 | GTEx v8 brain-region TPM (`rna_brain_gtex.tsv`) | https://www.proteinatlas.org/about/download |
 | gnomAD v4.1 constraint (LOEUF, pLI) | https://gnomad.broadinstitute.org |
