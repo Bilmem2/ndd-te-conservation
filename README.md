@@ -40,10 +40,12 @@ fetches them. Everything needed to regenerate the **statistics and figures** is 
 | `results/ccre/`, `results/brain/` | ENCODE cCRE and fetal-brain DNase overlays |
 | `results/cross_disease/` | ClinVar comparison sets |
 | `results/functional/`, `results/gnomad_mei/` | Exploratory analyses, not used as evidence |
-| `figures/` | One file per figure; the mapping is below |
+| `figures/` | One file per figure, named for the number it carries in the submission |
 
-Each file is named for the number it carries in the submission. Online Resource 6
-is supplementary text and has no figure.
+## Figures
+
+Online Resource 6 is supplementary text and is the one Online Resource with no
+figure. Exactly one script writes each figure.
 
 | File | In the submission | Produced by | Content |
 |------|------------------|-------------|---------|
@@ -60,12 +62,6 @@ is supplementary text and has no figure.
 | `ESM5_PhyloEffect` | Online Resource 5 | `fig_phylo.py` | Effect size vs divergence time |
 | `ESM7_Alu_Boxplots` | Online Resource 7 | (kept from the original submission) | Per-species Alu distributions |
 
-Exactly one script writes each figure. `12_figures_final.py` is the original
-monolithic figure script and once wrote four of these as well; those `savefig`
-calls are commented out, because running it in pipeline order otherwise reverted
-Figure 1 to a five-species boxplot from before the panel was extended and the
-heatmap to the colour scale the review objected to.
-
 ---
 
 ## Data sources
@@ -78,38 +74,31 @@ heatmap to the colour scale the review objected to.
 | Mouse | mm10, GENCODE vM25 | https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M25/ |
 | Orangutan, gibbon, macaque, marmoset, squirrel monkey, mouse lemur, dog | ponAbe3, nomLeu3, rheMac10, calJac4, SaiBol1.0, Mmur\_3.0, canFam6 | Ensembl release 112, `https://ftp.ensembl.org/pub/release-112/gtf/` — `00_download_data.sh` maps each assembly to its Ensembl species directory |
 
+Ensembl's `ROS_Cfam_1.0` and UCSC's `canFam6` are the same dog assembly; the
+repository uses `canFam6` throughout.
+
 ### RepeatMasker
 
 `https://hgdownload.soe.ucsc.edu/goldenPath/<assembly>/database/rmsk.txt.gz` for
 `hg38`, `ponAbe3`, `nomLeu3`, `rheMac10`, `calJac4`, `saiBol1`, `mm10`, `canFam6`.
+RepeatMasker itself is never run; the pipeline parses these pre-computed tracks.
 
-The **mouse lemur** track comes instead from the UCSC GenArk hub
-(`GCF_000165445.2`); its RefSeq sequence names are mapped onto the Ensembl GTF via the
-hub's `chromAlias.txt`. Alu was taken from that hub's BED; LINE-1 is parsed from the
-hub's `GCF_000165445.2.repeatMasker.out.gz` by `37_lemur_line1.py`, which writes
-`data/mmur3/line1_refseq.bed` on first run. For the **squirrel monkey**, Ensembl uses
-versioned INSDC accessions (`JH378105.1`) where UCSC uses the unversioned form, so the
-suffix is stripped before matching.
-
-`00_download_data.sh` covers all nine assemblies, including the mouse lemur GenArk
-files above and `hg38.2bit`, from which promoter GC content is read directly. The
-hg38 CpG-island track (`cpgIslandExt`, used by `12_figures_final.py` for the CpG
-stratification figure) is fetched on demand instead, as are the human-only
-auxiliary sources in the table below. All are excluded from version control by
-size.
-
-> **Dog.** Ensembl's `ROS_Cfam_1.0` and UCSC's `canFam6` are the same assembly.
-> The repository uses `canFam6` throughout.
+Two assemblies need extra handling. The **mouse lemur** track comes from the UCSC
+GenArk hub (`GCF_000165445.2`) instead, and its RefSeq sequence names are mapped
+onto the Ensembl GTF through the hub's `chromAlias.txt`; Alu is taken from the
+hub's BED and LINE-1 is parsed from `GCF_000165445.2.repeatMasker.out.gz` by
+`37_lemur_line1.py`. For the **squirrel monkey**, Ensembl uses versioned INSDC
+accessions (`JH378105.1`) where UCSC uses the unversioned form, so the suffix is
+stripped before matching.
 
 ### Ortholog tables
 
-The 1:1 ortholog tables in `data/orthologs/` were generated from **Ensembl BioMart**
-and are committed directly. There is no fetch script on purpose: BioMart changes between
-releases, and shipping the exact tables is what makes the ortholog validation
-reproducible. Each was pulled from the `hsapiens_gene_ensembl` dataset with the
-`<species>_homolog_associated_gene_name` and `<species>_homolog_orthology_type`
-attributes, filtered to `ortholog_one2one`; the squirrel monkey prefix is
-`sbboliviensis`.
+The 1:1 ortholog tables in `data/orthologs/` are committed rather than fetched,
+because BioMart changes between releases and shipping the exact tables is what
+makes the ortholog validation reproducible. Each was pulled from the
+`hsapiens_gene_ensembl` dataset with the `<species>_homolog_associated_gene_name`
+and `<species>_homolog_orthology_type` attributes, filtered to `ortholog_one2one`;
+the squirrel monkey prefix is `sbboliviensis`.
 
 ### Other datasets
 
@@ -136,15 +125,11 @@ conda env create -f environment.yml
 conda activate bio_master
 ```
 
-Python 3.10 with pandas, numpy, scipy, matplotlib, seaborn, plus **twobitreader**
-(promoter GC from `hg38.2bit`) and **tabulate**.
-
-**BEDTools ≥ 2.31** must be installed separately. It is called by `05_intersect.sh`,
-`08_encode_overlap_v2.py`, `09_window_sensitivity.py`, `10_cross_disease.py`,
-`14_gnomad_mei.py`, `15_context_controls.py` and `16_ccre_overlay.py`. Every other
-script computes interval overlaps in NumPy, including `12_figures_final.py`, whose
-NumPy counter was checked against `bedtools intersect -c` and returns identical counts.
-RepeatMasker itself is never run — the pipeline parses pre-computed UCSC tracks.
+Python 3.10 with pandas, numpy, scipy, matplotlib, seaborn, **twobitreader** and
+**tabulate**. **BEDTools ≥ 2.31** must be installed separately; the scripts that
+do not call it compute interval overlaps in NumPy instead, and that routine was
+checked against `bedtools intersect -c` on the hg38 CpG-island track. The
+syntenic transfer also needs the UCSC `liftOver` binary in `tools/`.
 
 ---
 
@@ -156,7 +141,7 @@ from a fresh clone with no path edits. Because `results/`, `data/gene_lists/` an
 promoter and TE BED files from scratch.** Later steps still read individual
 downloaded files — `hg38.2bit` for GC content, the gnomAD constraint table,
 ClinVar, the cCRE registry, the fetal DNase peaks, the recombination map, or the
-chain files for the syntenic transfer. `00_download_data.sh` fetches all of them.
+chain files. `00_download_data.sh` fetches all of them.
 
 ```bash
 git clone https://github.com/Bilmem2/ndd-te-conservation.git
@@ -205,7 +190,7 @@ python scripts/36_loeuf_gradient.py       # Alu density across LOEUF deciles
 python scripts/37_lemur_line1.py          # mouse lemur LINE-1
 python scripts/38_squirrel_ortholog.py    # squirrel monkey 1:1 ortholog control
 python scripts/39_squirrel_line1.py       # squirrel monkey LINE-1 (completes the panel)
-python scripts/40_gc_analysis.py          # promoter GC + GC-stratified depletion (ESM 4)
+python scripts/40_gc_analysis.py          # promoter GC + GC-stratified depletion
 python scripts/41_dog_cansine.py          # dog Can-SINE boundary test
 python scripts/42_coverage_robustness.py  # Alu as merged bp coverage, not record counts
 python scripts/43_flanking_control.py     # promoter vs flanking windows out to 250 kb
@@ -219,7 +204,7 @@ python scripts/45_promoter_vs_local.py    # promoter against its own regional ba
 python scripts/46_paired_matched_tests.py # Wilcoxon, sign-flip permutation, Kerby r
 python scripts/47_line1_floor.py          # is an Alu-sized deficit detectable at LINE-1 density
 python scripts/48_cross_disease_strict.py # explicit P/LP rule for the ClinVar sets
-python scripts/49_syntenic_promoters.py   # liftOver transfer; needs tools/liftOver + chain files
+python scripts/49_syntenic_promoters.py   # liftOver transfer; needs chain files
 
 # 13   figures and consolidation
 python scripts/fig_alu_primates.py        # Fig 1
@@ -234,15 +219,13 @@ python scripts/fig_phylo.py               # ESM 5
 python scripts/22_consolidate.py
 ```
 
-ESM 4 comes from `40_gc_analysis.py` in step 10.
-
-Eight scripts are not in the recipe and are kept for provenance.
+Eight scripts are kept for provenance and are not in the recipe.
 `06_statistics.py` and `08_encode_overlap_v2.py` are superseded by
 `11_stats_updated.py` and `16_ccre_overlay.py`. `07_pli_correlation.py`,
 `14_gnomad_mei.py`, `17_functional_consequence.py` and `44_mei_matched.py` are
-**exploratory and not used as evidence** — the polymorphic mobile-element
-decomposition they produce is mentioned in the Discussion only as inconclusive.
-`probe_*.py` are scratch checks.
+exploratory and not used as evidence; the polymorphic mobile-element
+decomposition they produce is reported in the Discussion only as inconclusive.
+`probe_dosage.py` and `probe_subfamily.py` are scratch checks.
 
 ---
 
