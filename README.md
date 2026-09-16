@@ -44,7 +44,9 @@ fetches them. Everything needed to regenerate the **statistics and figures** is 
 
 ## Figures
 
-Each figure has a single producing script; `fig_new.py` draws two of them.
+Each figure has a single producing script; `fig_new.py` draws two of them. This
+table maps figure *files*, which are in `figures/`. The Online Resource
+documents themselves are part of the manuscript and are not in this repository.
 
 | File | In the submission | Produced by | Content |
 |------|------------------|-------------|---------|
@@ -236,6 +238,4 @@ If you use this code or the derived gene sets, please cite:
 > Sevilmiş, C. Conserved SINE and Lineage-Variable LINE-1 Depletion at
 > Neurodevelopmental Disorder Promoters. Manuscript under review (2026).
 
-Until that appears, the anchor result for human is published as a preprint:
-doi:[10.20944/preprints202604.0715.v1](https://doi.org/10.20944/preprints202604.0715.v1).
 Raw annotations remain subject to the terms of their original providers.
