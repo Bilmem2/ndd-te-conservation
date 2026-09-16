@@ -14,7 +14,9 @@ mapped by HGNC symbol (as for the other non-human species).
 
 Data:
   data/mmur3/mmur3.gtf.gz        Ensembl 112 GTF (seqnames '1','2',...)
-  data/mmur3/alu_refseq.bed      SINE/Alu from GenArk RepeatMasker (RefSeq names)
+  data/mmur3/repeatMasker.out.gz GenArk RepeatMasker output (RefSeq names); its
+                                 SINE/Alu lines are written out to
+                                 data/mmur3/alu_refseq.bed on first run
   data/mmur3/chromAlias.txt      RefSeq <-> Ensembl seqname map
 Outputs:
   results/mmur3/{HighConfNDD_Alu.bed, Housekeeping_Alu.bed, lemur_stats.csv}
@@ -49,8 +51,32 @@ def refseq_to_ensembl():
     return m
 
 
+ALU_BED = MM / "alu_refseq.bed"
+
+
+def extract_alu_bed():
+    """Pull the SINE/Alu lines out of the GenArk RepeatMasker output.
+
+    00_download_data.sh fetches repeatMasker.out.gz but no per-class BED, so the
+    BED is built here on first run and reused afterwards; 37_lemur_line1.py does
+    the same for LINE/L1."""
+    if ALU_BED.exists():
+        return
+    print("extracting SINE/Alu from RepeatMasker output ...")
+    n = 0
+    with gzip.open(MM / "repeatMasker.out.gz", "rt", errors="replace") as fh, \
+            open(ALU_BED, "w", newline="") as out:
+        for line in fh:
+            p = line.split()
+            if len(p) > 10 and p[0].isdigit() and p[10] == "SINE/Alu":
+                out.write(f"{p[4]}\t{int(p[5]) - 1}\t{p[6]}\n")
+                n += 1
+    print(f"  wrote {n:,} Alu intervals")
+
+
 def load_alu():
-    a = pd.read_csv(MM / "alu_refseq.bed", sep="\t", header=None, names=["rs", "start", "end"])
+    extract_alu_bed()
+    a = pd.read_csv(ALU_BED, sep="\t", header=None, names=["rs", "start", "end"])
     m = refseq_to_ensembl()
     a["chrom"] = a["rs"].map(m)
     return a.dropna(subset=["chrom"])[["chrom", "start", "end"]]

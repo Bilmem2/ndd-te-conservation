@@ -47,6 +47,24 @@ def squirrel_monkey():
                 sig="***" if p < 1e-3 else "**" if p < 1e-2 else "*" if p < 0.05 else "ns")
 
 
+def side_table(path, species, te):
+    """A test run by its own script, mapped onto the master schema.
+
+    statistics_final.csv predates the squirrel monkey, mouse lemur and dog
+    Can-SINE runs, so those three tests live in per-species CSVs. They belong in
+    the master table: Table 1 of the manuscript reports all of them, and the
+    Benjamini-Hochberg family in 29_b1_b2_split.py is taken from this table, so
+    leaving them out would correct over a smaller family than the one reported.
+    """
+    s = pd.read_csv(path).iloc[0]
+    p = float(s["p_value"])
+    return dict(species=species, mya=int(s["mya"]), TE=te,
+                n_HK=int(s["n_HK"]), n_NDD=int(s["n_NDD"]),
+                median_HK=float(s["median_HK"]), median_NDD=float(s["median_NDD"]),
+                p_value=p, r=float(s["r"]),
+                sig="***" if p < 1e-3 else "**" if p < 1e-2 else "*" if p < 0.05 else "ns")
+
+
 def cross_species():
     base = pd.read_csv(R / "statistics_final.csv")
     lem = pd.read_csv(R / "mmur3" / "lemur_stats.csv")
@@ -54,7 +72,12 @@ def cross_species():
     lem["species"] = "MouseLemur"
     b1b2 = pd.DataFrame([mouse_b1b2()])[COLS]
     sq = pd.DataFrame([squirrel_monkey()])[COLS]
-    full = pd.concat([base[COLS], lem[COLS], sq, b1b2], ignore_index=True)
+    extra = pd.DataFrame([
+        side_table(R / "saiBol1" / "squirrel_line1_stats.csv", "SquirrelMonkey", "LINE1"),
+        side_table(R / "mmur3" / "lemur_line1_stats.csv", "MouseLemur", "LINE1"),
+        side_table(R / "canFam6" / "dog_cansine_stats.csv", "Dog", "CanSINE"),
+    ])[COLS]
+    full = pd.concat([base[COLS], lem[COLS], sq, b1b2, extra], ignore_index=True)
     order = {"Alu": 0, "B1B2": 0, "LINE1": 1}
     full["sec"] = full["TE"].map(lambda t: order.get(t, 2))
     full = full.sort_values(["sec", "mya"]).drop(columns="sec").reset_index(drop=True)
@@ -70,6 +93,7 @@ def main():
     cs = cross_species()
     sine = cs[cs["TE"].isin(["Alu", "B1B2"])]
     line1 = cs[cs["TE"] == "LINE1"]
+    cansine = cs[cs["TE"] == "CanSINE"]
 
     L = []
     L.append("# Results Backbone — Conserved SINE Depletion at NDD Promoters (revised)\n")
@@ -82,6 +106,8 @@ def main():
     L.append(sine.to_markdown(index=False))
     L.append("\n## 2. LINE-1 (internal contrast: weak, lineage-variable)\n")
     L.append(line1.to_markdown(index=False))
+    L.append("\n### 2b. Dog Can-SINE (AT-biased SINE, target-preference contrast)\n")
+    L.append(cansine.to_markdown(index=False))
 
     L.append("\n## 3. Supporting rigor (all human hg38)\n")
 
