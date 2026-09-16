@@ -269,7 +269,7 @@ cpg_bed = f"{DATA}/hg38/cpg_islands.bed"
 alu_bed = f"{DATA}/hg38/rmsk/Alu.bed"
 
 fig, axes = plt.subplots(1, 2, figsize=(12,6), sharey=True)
-for ax, letter, (cpg_status, cpg_label) in zip(axes, "AB",
+for ax, letter, (cpg_status, cpg_label) in zip(axes, "ab",
     [('with','CpG Island Present'), ('without','No CpG Island')]):
     plot_data = []
     ns = []

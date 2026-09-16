@@ -84,7 +84,7 @@ axA.set_ylim(0.50, 1.05)
 axA.set_xticks([0] + [pos[o] for o in OFFS])
 axA.set_xticklabels(["0"] + [str(int(o)) for o in OFFS])
 axA.legend(fontsize=9.5, loc="lower right", framealpha=0.95)
-axA.set_title("A   Depletion by distance from the TSS", loc="left",
+axA.set_title("a   Depletion by distance from the TSS", loc="left",
               fontsize=12, fontweight="bold")
 axA.grid(axis="y", color="#DDDDDD", lw=0.6, zorder=0)
 axA.set_axisbelow(True)
@@ -110,7 +110,7 @@ axB.set_xlabel("Alu depletion relative to housekeeping genes")
 axB.set_xlim(0, 0.56)
 axB.set_xticks([0, 0.1, 0.2, 0.3, 0.4, 0.5])
 axB.set_xticklabels(["0", "10 %", "20 %", "30 %", "40 %", "50 %"])
-axB.set_title("B   The promoter deficit factors in two", loc="left",
+axB.set_title("b   The promoter deficit factors in two", loc="left",
               fontsize=12, fontweight="bold")
 axB.grid(axis="x", color="#DDDDDD", lw=0.6)
 axB.set_axisbelow(True)

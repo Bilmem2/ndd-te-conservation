@@ -84,8 +84,8 @@ def draw(ax, key, title, xmax):
 
 
 top = max(max(r["sine"][0], r["sine"][2]) for r in rows)
-draw(axS, "sine", "A   SINE-class elements", top * 1.30)
-draw(axL, "l1", "B   LINE-1", top * 1.30)
+draw(axS, "sine", "a   SINE-class elements", top * 1.30)
+draw(axL, "l1", "b   LINE-1", top * 1.30)
 
 axS.set_yticks(ys)
 axS.set_yticklabels([f"{r['name']}\n$\\sim${r['mya']} Mya" for r in rows], fontsize=9.5)

@@ -95,7 +95,7 @@ for d, lab in ((hk, "Housekeeping"), (nd, "HighConfNDD")):
 ax[0].set_xlabel("Promoter GC content")
 ax[0].set_ylabel("Density")
 ax[0].legend(frameon=False)
-ax[0].set_title("A   Promoter GC content", loc="left", fontweight="bold", fontsize=11)
+ax[0].set_title("a   Promoter GC content", loc="left", fontweight="bold", fontsize=11)
 
 # The right panel used to be a scatter of Alu frequency against GC content. Alu
 # frequency in a 4 kb window takes about a dozen distinct values, so the points
@@ -127,7 +127,7 @@ ax[1].set_xticks(xs)
 ax[1].set_xticklabels([r["stratum"] for r in strata])
 ax[1].set_xlabel("Promoter GC content stratum")
 ax[1].set_ylabel("Mean Alu frequency (count per kb)")
-ax[1].set_title("B   Alu frequency within GC stratum", loc="left",
+ax[1].set_title("b   Alu frequency within GC stratum", loc="left",
                 fontweight="bold", fontsize=11)
 ax[1].set_ylim(0, top * 1.34)
 ax[1].spines[["top", "right"]].set_visible(False)

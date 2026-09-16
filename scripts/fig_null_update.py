@@ -44,7 +44,7 @@ spare = axes[len(COMBOS):]
 for extra in spare:
     extra.axis("off")
 
-for ax, letter, (assembly, label, te) in zip(axes, "ABCDE", COMBOS):
+for ax, letter, (assembly, label, te) in zip(axes, "abcde", COMBOS):
     hk = density(RESULTS / assembly / f"Housekeeping_{te}.bed")
     ndd = density(RESULTS / assembly / f"HighConfNDD_{te}.bed")
     _, obs_p = stats.mannwhitneyu(hk, ndd, alternative="greater")

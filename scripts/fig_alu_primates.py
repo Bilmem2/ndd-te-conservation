@@ -90,7 +90,7 @@ axA.set_xlabel("Alu elements per promoter window (TSS $\\pm$2 kb)")
 axA.set_ylabel("Fraction of promoters")
 axA.set_ylim(0, max(fn.max(), fh.max()) * 1.20)
 axA.legend(frameon=False, loc="upper right", fontsize=10, bbox_to_anchor=(1.0, 0.94))
-axA.set_title("A   Human promoters", loc="left", fontweight="bold", fontsize=12)
+axA.set_title("a   Human promoters", loc="left", fontweight="bold", fontsize=12)
 axA.spines[["top", "right"]].set_visible(False)
 axA.text(0.30, 0.97, f"mean {hk.mean()/WIN_KB:.2f} vs {ndd.mean()/WIN_KB:.2f} per kb",
          transform=axA.transAxes, fontsize=9.5, color="#444", ha="center")
@@ -123,7 +123,7 @@ axB.set_xlabel("Rank-biserial $r$ (NDD vs housekeeping)")
 axB.set_xlim(-0.46, 0.22)
 axB.set_xticks([-0.4, -0.3, -0.2, -0.1, 0.0])
 axB.set_ylim(-0.7, len(rows) - 0.25)
-axB.set_title("B   Effect size across the primate panel", loc="left",
+axB.set_title("b   Effect size across the primate panel", loc="left",
               fontweight="bold", fontsize=12)
 axB.spines[["top", "right", "left"]].set_visible(False)
 axB.tick_params(axis="y", length=0)

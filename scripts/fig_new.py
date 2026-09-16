@@ -62,8 +62,8 @@ allr = ds["r"].tolist() + rs["r"].tolist() + mc["r"].tolist()
 LO, HI = min(allr) * 1.30, abs(min(allr)) * 0.20     # one scale for all three
 
 fig, ax = plt.subplots(1, 3, figsize=(15, 5.2), sharey=True)
-for a, tab, letter, title in [(ax[0], ds, "A", "Within gene-density quartile"),
-                              (ax[1], rs, "B", "Within recombination quartile")]:
+for a, tab, letter, title in [(ax[0], ds, "a", "Within gene-density quartile"),
+                              (ax[1], rs, "b", "Within recombination quartile")]:
     rbars(a, tab["stratum"].astype(str).tolist(), tab["r"].tolist(),
           tab["p_value"].tolist(), list(zip(tab["n_HK"], tab["n_NDD"])), LO)
     panel(a, letter, title)
@@ -71,7 +71,7 @@ for a, tab, letter, title in [(ax[0], ds, "A", "Within gene-density quartile"),
 rbars(ax[2], ["vs all\nhousekeeping", "vs matched control\n(GC + density + recomb)"],
       mc["r"].tolist(), mc["p_value"].tolist(),
       list(zip(mc["n_HK"], mc["n_NDD"])), LO)
-panel(ax[2], "C", "Joint covariate matching")
+panel(ax[2], "c", "Joint covariate matching")
 
 ax[0].set_ylabel("Rank-biserial $r$ (NDD vs control)")
 ax[0].set_ylim(LO, HI)
@@ -106,7 +106,7 @@ ax[0].set_xticks(x, NICE, fontsize=9)
 ax[0].set_ylabel("cCRE density (per kb)")
 ax[0].set_ylim(0, top * 1.18)
 ax[0].legend(fontsize=9, frameon=False)
-panel(ax[0], "A", "cCRE density by class")
+panel(ax[0], "a", "cCRE density by class")
 
 f = fp.set_index("cCRE_group").loc[GROUPS]
 ax[1].bar(x - w / 2, f["median_free"], w, label="Alu-free promoters", color=FREE_C,
@@ -121,17 +121,17 @@ ax[1].set_xticks(x, ["PLS", "ELS", "Active"], fontsize=10)
 ax[1].set_ylabel("cCRE count (median)")
 ax[1].set_ylim(0, top * 1.18)
 ax[1].legend(fontsize=9, frameon=False)
-panel(ax[1], "B", "Alu-free versus Alu-positive promoters")
+panel(ax[1], "b", "Alu-free versus Alu-positive promoters")
 
 LO4 = min(cs["r"]) * 1.30
 rbars(ax[2], cs["active_cCRE_stratum"].astype(str).tolist(), cs["r"].tolist(),
       cs["p_value"].tolist(), list(zip(cs["n_HK"], cs["n_NDD"])), LO4)
 ax[2].set_ylabel("Rank-biserial $r$ (NDD vs housekeeping)")
 ax[2].set_ylim(LO4, abs(LO4) * 0.20)
-panel(ax[2], "C", "Within active-cCRE density quartile")
+panel(ax[2], "c", "Within active-cCRE density quartile")
 
 fig.text(0.5, -0.02, "*** $p<0.001$; ** $p<0.01$; * $p<0.05$; ns, not significant. "
-         "In C, $n$ is given as housekeeping / NDD.", ha="center", fontsize=9,
+         "In c, $n$ is given as housekeeping / NDD.", ha="center", fontsize=9,
          color="#555")
 plt.tight_layout()
 plt.savefig(FIGS / "Fig4_cCRE.pdf", dpi=300, bbox_inches="tight")
