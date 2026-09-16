@@ -27,7 +27,7 @@ fetches them. Everything needed to regenerate the **statistics and figures** is 
 
 | Path | Contents |
 |------|----------|
-| `scripts/` | Numbered `00`–`49` in the order the analysis was built; the recipe below marks which of them reproduce the published results. `fig_*.py` draw the figures; `probe_*.py` are scratch checks |
+| `scripts/` | Numbered `00`–`49` in the order the analysis was built; the recipe below marks which of them reproduce the published results. `fig_*.py` draw the figures; `probe_*.py` are exploratory probes |
 | `data/gene_lists/` | HighConfNDD (n = 1020) and Housekeeping (n = 1679), plus the ClinVar disease sets in a loose and a strict version — the manuscript uses the strict ones |
 | `data/orthologs/` | Ensembl BioMart 1:1 ortholog tables, committed on purpose (see below) |
 | `results/` — one per assembly | `hg38`, `ponAbe3`, `nomLeu3`, `rheMac10`, `calJac4`, `saiBol1`, `mmur3`, `mm10`, `canFam6`: promoter BEDs with TE counts, one file per gene set and element class |
@@ -231,7 +231,10 @@ The recipe calls 52 of the 60 scripts. The other eight are kept for provenance:
 `14_gnomad_mei.py`, `17_functional_consequence.py` and `44_mei_matched.py`,
 exploratory and not used as evidence — the polymorphic mobile-element
 decomposition they produce is reported in the Discussion only as inconclusive;
-and the two `probe_*.py` scratch checks.
+and `probe_dosage.py` and `probe_subfamily.py`, feasibility probes written to
+find out whether a question was worth pursuing before it was analysed properly.
+The subfamily-age question `probe_subfamily.py` scoped is reported in the
+Results, computed there with confidence intervals by `34_orientation_bias.py`.
 
 ---
 
