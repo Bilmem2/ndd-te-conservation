@@ -27,7 +27,7 @@ fetches them. Everything needed to regenerate the **statistics and figures** is 
 
 | Path | Contents |
 |------|----------|
-| `scripts/` | `00`–`49` run in pipeline order; `fig_*.py` draw the figures; `probe_*.py` are scratch checks |
+| `scripts/` | Numbered `00`–`49` in the order the analysis was built; the recipe below marks which of them reproduce the published results. `fig_*.py` draw the figures; `probe_*.py` are scratch checks |
 | `data/gene_lists/` | HighConfNDD (n = 1020) and Housekeeping (n = 1679), plus the ClinVar disease sets in a loose and a strict version — the manuscript uses the strict ones |
 | `data/orthologs/` | Ensembl BioMart 1:1 ortholog tables, committed on purpose (see below) |
 | `results/` — one per assembly | `hg38`, `ponAbe3`, `nomLeu3`, `rheMac10`, `calJac4`, `saiBol1`, `mmur3`, `mm10`, `canFam6`: promoter BEDs with TE counts, one file per gene set and element class |
@@ -44,7 +44,7 @@ fetches them. Everything needed to regenerate the **statistics and figures** is 
 
 ## Figures
 
-Exactly one script writes each figure.
+Each figure has a single producing script; `fig_new.py` draws two of them.
 
 | File | In the submission | Produced by | Content |
 |------|------------------|-------------|---------|
@@ -219,17 +219,23 @@ python scripts/fig_phylo.py               # ESM 5
 python scripts/22_consolidate.py
 ```
 
-Eight scripts are kept for provenance and are not in the recipe.
-`06_statistics.py` and `08_encode_overlap_v2.py` are superseded by
-`11_stats_updated.py` and `16_ccre_overlay.py`. `07_pli_correlation.py`,
-`14_gnomad_mei.py`, `17_functional_consequence.py` and `44_mei_matched.py` are
-exploratory and not used as evidence; the polymorphic mobile-element
-decomposition they produce is reported in the Discussion only as inconclusive.
-`probe_dosage.py` and `probe_subfamily.py` are scratch checks.
+The recipe calls 52 of the 60 scripts. The other eight are kept for provenance:
+`06_statistics.py` and `08_encode_overlap_v2.py`, superseded by
+`11_stats_updated.py` and `16_ccre_overlay.py`; `07_pli_correlation.py`,
+`14_gnomad_mei.py`, `17_functional_consequence.py` and `44_mei_matched.py`,
+exploratory and not used as evidence — the polymorphic mobile-element
+decomposition they produce is reported in the Discussion only as inconclusive;
+and the two `probe_*.py` scratch checks.
 
 ---
 
 ## Citation
 
-If you use this code or the derived gene sets, please cite the manuscript. Raw
-annotations remain subject to the terms of their original providers.
+If you use this code or the derived gene sets, please cite:
+
+> Sevilmiş, C. Conserved SINE and Lineage-Variable LINE-1 Depletion at
+> Neurodevelopmental Disorder Promoters. Manuscript under review (2026).
+
+Until that appears, the anchor result for human is published as a preprint:
+doi:[10.20944/preprints202604.0715.v1](https://doi.org/10.20944/preprints202604.0715.v1).
+Raw annotations remain subject to the terms of their original providers.
