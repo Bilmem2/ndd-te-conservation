@@ -192,7 +192,7 @@ python scripts/36_loeuf_gradient.py       # Alu density across LOEUF deciles
 python scripts/37_lemur_line1.py          # mouse lemur LINE-1
 python scripts/38_squirrel_ortholog.py    # squirrel monkey 1:1 ortholog control
 python scripts/39_squirrel_line1.py       # squirrel monkey LINE-1 (completes the panel)
-python scripts/40_gc_analysis.py          # promoter GC + GC-stratified depletion
+python scripts/40_gc_analysis.py          # promoter GC + GC-stratified depletion; draws ESM 4
 python scripts/41_dog_cansine.py          # dog Can-SINE boundary test
 python scripts/42_coverage_robustness.py  # Alu as merged bp coverage, not record counts
 python scripts/43_flanking_control.py     # promoter vs flanking windows out to 250 kb
@@ -220,6 +220,10 @@ python scripts/12_figures_final.py        # ESM 3
 python scripts/fig_phylo.py               # ESM 5
 python scripts/22_consolidate.py
 ```
+
+Two Online Resources are absent from this step. ESM 4 is drawn by
+`40_gc_analysis.py` in step 10, which performs the GC analysis and its figure
+together; ESM 6 is supplementary text and has no figure.
 
 The recipe calls 52 of the 60 scripts. The other eight are kept for provenance:
 `06_statistics.py` and `08_encode_overlap_v2.py`, superseded by
