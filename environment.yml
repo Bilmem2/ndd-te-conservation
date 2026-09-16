@@ -4,14 +4,18 @@
 #   conda env create -f environment.yml
 #   conda activate bio_master
 #
-# NOTE ON PINS: the versions below are a coherent, co-installable baseline
-# (Python 3.10 era, numpy < 2 for binary compatibility). If you have the
-# original analysis environment available, replace these with the exact
-# versions via `conda env export --no-builds` for byte-for-byte reproduction.
+# The pins below are the versions the reported analyses were run under, and
+# match the software versions given in the Methods. Nothing in the pipeline
+# depends on a specific patch release; the pins are here so a rerun starts from
+# a known state, not because the results are fragile to them.
 #
 # SYSTEM DEPENDENCY (not installed here): BEDTools >= 2.31 must be on PATH —
-# see README "Requirements". RepeatMasker is NOT required: the pipeline parses
-# pre-computed UCSC RepeatMasker tracks (rmsk.txt.gz), it does not run RepeatMasker.
+# see README "Requirements". A few scripts (05_intersect.sh, 08, 09, 10) shell
+# out to `bedtools intersect -c`; the later scripts use an equivalent NumPy
+# interval routine instead, checked against bedtools on the hg38 CpG-island
+# track. RepeatMasker is NOT required: the pipeline parses pre-computed UCSC
+# RepeatMasker tracks (rmsk.txt.gz, or repeatMasker.out.gz for mouse lemur), it
+# does not run RepeatMasker.
 
 name: bio_master
 
@@ -20,15 +24,15 @@ channels:
   - defaults
 
 dependencies:
-  - python=3.10
-  - pandas=2.2.2
-  - numpy=1.26.4
-  - scipy=1.13.1
-  - matplotlib=3.8.4
+  - python=3.14
+  - pandas=2.3.3
+  - numpy=2.3.5
+  - scipy=1.16.3
+  - matplotlib=3.11.0
   - seaborn=0.13.2
-  - tqdm=4.66.4
-  - requests=2.32.3
-  - tabulate=0.9.0            # 22_consolidate.py (Markdown tables)
+  - tqdm=4.67.1
+  - requests=2.32.5
+  - tabulate=0.10.0           # 22_consolidate.py (Markdown tables)
   - pip
   - pip:
-      - twobitreader==3.1.7   # promoter GC from hg38.2bit (18/19_*.py)
+      - twobitreader==4.0.0   # promoter GC from hg38.2bit (18/19/40_*.py)
