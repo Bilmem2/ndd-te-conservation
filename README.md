@@ -44,8 +44,7 @@ fetches them. Everything needed to regenerate the **statistics and figures** is 
 
 ## Figures
 
-Online Resource 6 is supplementary text and is the one Online Resource with no
-figure. Exactly one script writes each figure.
+Exactly one script writes each figure.
 
 | File | In the submission | Produced by | Content |
 |------|------------------|-------------|---------|
@@ -60,6 +59,7 @@ figure. Exactly one script writes each figure.
 | `ESM3_CpG` | Online Resource 3 | `12_figures_final.py` | CpG island stratification |
 | `ESM4_GC_Analysis` | Online Resource 4 | `40_gc_analysis.py` | Promoter GC content |
 | `ESM5_PhyloEffect` | Online Resource 5 | `fig_phylo.py` | Effect size vs divergence time |
+| *(none)* | Online Resource 6 | — | Supplementary **text**, not a figure: the permutation null, CpG stratification and GC analysis reported in full |
 | `ESM7_Alu_Boxplots` | Online Resource 7 | (kept from the original submission) | Per-species Alu distributions |
 
 ---
