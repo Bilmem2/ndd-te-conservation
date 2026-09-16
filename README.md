@@ -107,9 +107,10 @@ the squirrel monkey prefix is `sbboliviensis`.
 | Dataset | Source |
 |---------|--------|
 | SFARI Gene 2.0 (Tier 1+2) | https://sfari.org/resource/sfari-gene |
-| ClinGen Epilepsy GCEP | https://clinicalgenome.org |
-| HRT Atlas v1.0 (housekeeping) | https://www.housekeeping.unicamp.br |
-| GTEx v8 median TPM by tissue | https://gtexportal.org |
+| ClinGen Epilepsy GCEP | https://search.clinicalgenome.org/kb/affiliate/40005 |
+| HPO term gene lists (HP:0000729, HP:0001249, HP:0001250, HP:0007018) | https://hpo.jax.org — or `https://ontology.jax.org/api/network/annotation/HP%3A<id>/download/gene` |
+| HRT Atlas v1.0 (housekeeping) | https://housekeeping.unicamp.br |
+| GTEx v8 brain-region TPM (`rna_brain_gtex.tsv`) | https://www.proteinatlas.org/about/download |
 | gnomAD v4.1 constraint (LOEUF, pLI) | https://gnomad.broadinstitute.org |
 | ClinVar variant summary | https://ftp.ncbi.nlm.nih.gov/pub/clinvar/tab_delimited/ |
 | hg38 CpG islands (`cpgIslandExt`) | https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/ |
@@ -117,6 +118,24 @@ the squirrel monkey prefix is `sbboliviensis`.
 | ENCODE fetal DNase-seq | brain ENCFF955AQD, ENCFF631TDE, ENCFF670PXX; non-neural ENCFF667IEN, ENCFF362PZG, ENCFF016LYI |
 | Recombination map (GRCh38, deCODE-derived) | https://bochet.gcc.biostat.washington.edu/beagle/genetic_maps/ |
 | gnomAD v4.1 SV mobile-element insertions | https://gnomad.broadinstitute.org *(exploratory only)* |
+
+The first five are downloaded by hand rather than by `00_download_data.sh`,
+because each portal exports through its own button. None requires an account.
+Put them in `data/sources/` under the names `01_prepare_gene_lists.py` expects:
+
+```
+SFARI-Gene_genes_<release>_<export>.csv
+clingen_epilepsy.csv
+genes_for_HP_0000729.txt   genes_for_HP_0001249.txt
+genes_for_HP_0001250.txt   genes_for_HP_0007018.txt
+Housekeeping_GenesHuman.csv
+rna_brain_gtex.tsv
+```
+
+`data/sources/` is gitignored, so these are the one set of inputs a fresh clone
+has to fetch before step 1. Everything else comes down with
+`00_download_data.sh`. The gene lists these produce are committed under
+`data/gene_lists/`, so steps 2 onwards run without them.
 
 ---
 

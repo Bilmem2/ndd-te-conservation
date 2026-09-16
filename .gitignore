@@ -18,7 +18,9 @@ data/clinvar_variants.txt.gz
 data/gnomad_constraint.tsv
 tools/
 
-# Manually-downloaded, registration-gated gene-set sources for 01_prepare_gene_lists.py
+# Gene-set sources for 01_prepare_gene_lists.py. All are free downloads (see the
+# README table for the URLs); they are kept out of the repository because they
+# are third-party files, not because they are hard to obtain.
 data/sources/
 
 # ── Python ──

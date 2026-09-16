@@ -4,9 +4,11 @@ import re
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-# Raw gene-set source files — manual download required (registration-gated):
-# SFARI Gene, ClinGen Epilepsy, HPO term gene lists, HRT Atlas, GTEx brain TPM.
-# See README "Gene Set Sources". Place all source files under data/sources/.
+# Raw gene-set source files, downloaded by hand rather than by 00_download_data.sh
+# because each comes from a portal with its own export button: SFARI Gene,
+# ClinGen Epilepsy, the four HPO term lists, HRT Atlas and the Human Protein
+# Atlas GTEx brain table. All are free; the README "Other datasets" table gives
+# the URLs and the expected filenames. Place them under data/sources/.
 sync = REPO_ROOT / "data" / "sources"
 out_dir = REPO_ROOT / "data" / "gene_lists"
 os.makedirs(out_dir, exist_ok=True)
