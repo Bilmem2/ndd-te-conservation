@@ -1,0 +1,34 @@
+# published SFARI: SFARI-Gene_genes_05-01-2026release_05-12-2026export.csv
+# current  SFARI: SFARI-Gene_genes_07-12-2026release_09-16-2026export.csv
+gene_set	gene	status
+HighConfNDD	GSE1	only_in_current_sources
+HighConfNDD	KCNT2	only_in_current_sources
+HighConfNDD	UBA7	only_in_current_sources
+Housekeeping	CDK4	only_in_published
+Housekeeping	GUK1	only_in_published
+Housekeeping	ISCA2	only_in_published
+Housekeeping	MAU2	only_in_published
+Housekeeping	PPIB	only_in_published
+Housekeeping	SRSF1	only_in_published
+Housekeeping	THAP11	only_in_published
+Housekeeping	WSB2	only_in_published
+Housekeeping	YWHAZ	only_in_published
+Housekeeping	AL135905.2	only_in_current_sources
+Housekeeping	ATP5MD	only_in_current_sources
+Housekeeping	ATP5MPL	only_in_current_sources
+Housekeeping	C16orf70	only_in_current_sources
+Housekeeping	C16orf72	only_in_current_sources
+Housekeeping	C7orf26	only_in_current_sources
+Housekeeping	C9orf16	only_in_current_sources
+Housekeeping	CALM1	only_in_current_sources
+Housekeeping	CALM3	only_in_current_sources
+Housekeeping	ELOA	only_in_current_sources
+Housekeeping	FAM122A	only_in_current_sources
+Housekeeping	FAM160B1	only_in_current_sources
+Housekeeping	GATD3A	only_in_current_sources
+Housekeeping	INO80	only_in_current_sources
+Housekeeping	KIAA0100	only_in_current_sources
+Housekeeping	KIAA1109	only_in_current_sources
+Housekeeping	PHB	only_in_current_sources
+Housekeeping	SMIM11A	only_in_current_sources
+Housekeeping	TTC37	only_in_current_sources

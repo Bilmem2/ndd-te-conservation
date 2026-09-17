@@ -137,6 +137,16 @@ has to fetch before step 1. Everything else comes down with
 `00_download_data.sh`. The gene lists these produce are committed under
 `data/gene_lists/`, so steps 2 onwards run without them.
 
+SFARI names its export after the release date, and its curation moves. Step 1
+uses the 01 May 2026 release the published lists were built from when that file
+is present. With any other export it prints which one it found, compares the
+sets it would produce against the committed ones, writes the gene-by-gene
+difference to `results/gene_set_source_diff.tsv`, and **leaves
+`data/gene_lists/` untouched** — so a newer SFARI download cannot silently put
+the pipeline out of step with the paper. Pass `--overwrite` to rebuild the lists
+from whatever sources are present; every downstream result then belongs to that
+release, not to the one reported.
+
 ---
 
 ## Requirements
@@ -171,7 +181,7 @@ conda env create -f environment.yml && conda activate bio_master
 bash scripts/00_download_data.sh          # raw genomes, GTF, RepeatMasker
 
 # 1–5  build gene lists, TE BEDs, promoter windows, TE counts per promoter
-python scripts/01_prepare_gene_lists.py
+python scripts/01_prepare_gene_lists.py   # see note below before running
 bash   scripts/02_rmsk_to_bed.sh
 bash   scripts/03_get_promoters.sh
 bash   scripts/04_split_promoters.sh
