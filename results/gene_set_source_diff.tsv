@@ -1,5 +1,13 @@
-# published SFARI: SFARI-Gene_genes_05-01-2026release_05-12-2026export.csv
-# current  SFARI: SFARI-Gene_genes_07-12-2026release_09-16-2026export.csv
+# published-list SFARI name: SFARI-Gene_genes_05-01-2026release_05-12-2026export.csv
+# SFARI export used here:    SFARI-Gene_genes_07-12-2026release_09-16-2026export.csv
+# source: Housekeeping_GenesHuman.csv
+# source: SFARI-Gene_genes_07-12-2026release_09-16-2026export.csv
+# source: clingen_epilepsy.csv
+# source: genes_for_HP_0000729.txt
+# source: genes_for_HP_0001249.txt
+# source: genes_for_HP_0001250.txt
+# source: genes_for_HP_0007018.txt
+# source: rna_brain_gtex.tsv
 gene_set	gene	status
 HighConfNDD	GSE1	only_in_current_sources
 HighConfNDD	KCNT2	only_in_current_sources
