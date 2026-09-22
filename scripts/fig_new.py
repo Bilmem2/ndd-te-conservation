@@ -75,7 +75,7 @@ panel(ax[2], "c", "Joint covariate matching")
 
 ax[0].set_ylabel("Rank-biserial $r$ (NDD vs control)")
 ax[0].set_ylim(LO, HI)
-fig.text(0.5, -0.02, "Bar labels give $r$; below each marker, $n$ as housekeeping / NDD. "
+fig.text(0.5, -0.02, "Bar labels give $r$; above each bar, $n$ as housekeeping / NDD. "
          "*** $p<0.001$", ha="center", fontsize=9, color="#555")
 plt.tight_layout()
 plt.savefig(FIGS / "Fig3_ContextControls.pdf", dpi=300, bbox_inches="tight")

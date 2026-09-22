@@ -7,8 +7,9 @@ never reaches parity out to 250 kb: the deficit has a regional part and a
 promoter-local part, and the figure shows both at once.
 
 Panel B states the split. The promoter ratio is exactly the product of the
-background ratio and the promoter-to-background ratio, so the 43 % promoter
-deficit factors into a 27 % regional component and a 22 % promoter-local one.
+background ratio and the promoter-to-background ratio. Both panels are drawn on
+the same ratio scale: plotting the split as depletion percentages instead
+invites the reader to add the two parts, which is wrong, because they multiply.
 
 Inputs : results/hg38/flanking_control.csv      (43_flanking_control.py)
          results/hg38/promoter_vs_local.csv     (45_promoter_vs_local.py)
@@ -90,35 +91,39 @@ axA.grid(axis="y", color="#DDDDDD", lw=0.6, zorder=0)
 axA.set_axisbelow(True)
 
 # ── Panel B: the multiplicative split ───────────────────────────────────────
-total = 1 - row.prom_ratio
-regional = 1 - row.bg_ratio
-local = 1 - row.norm_ratio_of_means
+# Drawn as ratios, on the same scale as panel A, because the three quantities
+# are related by a product. Depletion percentages would read as additive shares
+# and would not sum to the observed deficit.
+regional = row.bg_ratio
+local = row.norm_ratio_of_means
+observed = row.prom_ratio
 
 axB.barh([2], [regional], color="#9AA7B5", edgecolor="black", lw=0.7, height=0.52)
 axB.barh([1], [local], color="#C98B5E", edgecolor="black", lw=0.7, height=0.52)
-axB.barh([0], [total], color=PROM, edgecolor="black", lw=0.7, height=0.52)
+axB.barh([0], [observed], color=PROM, edgecolor="black", lw=0.7, height=0.52)
 
-for y, v, lab in ((2, regional, f"{regional * 100:.0f} %"),
-                  (1, local, f"{local * 100:.0f} %"),
-                  (0, total, f"{total * 100:.0f} %")):
-    axB.text(v + 0.012, y, lab, va="center", fontsize=10.5, fontweight="bold")
+axB.axvline(1.0, color="black", lw=0.9, ls="--", zorder=3)
+axB.text(1.0, 2.52, "no depletion", fontsize=8.5, ha="center", va="bottom")
+
+for y, v in ((2, regional), (1, local), (0, observed)):
+    axB.text(v + 0.018, y, f"{v:.3f}", va="center", fontsize=10.5,
+             fontweight="bold")
 
 axB.set_yticks([2, 1, 0])
 axB.set_yticklabels(["Regional\nbackground", "Promoter-local\n(normalised)",
                      "Promoter\n(observed)"], fontsize=10)
-axB.set_xlabel("Alu depletion relative to housekeeping genes")
-axB.set_xlim(0, 0.56)
-axB.set_xticks([0, 0.1, 0.2, 0.3, 0.4, 0.5])
-axB.set_xticklabels(["0", "10 %", "20 %", "30 %", "40 %", "50 %"])
-axB.set_title("b   The promoter deficit factors in two", loc="left",
+axB.set_xlabel("Alu density ratio, NDD / housekeeping")
+axB.set_xlim(0, 1.18)
+axB.set_xticks([0, 0.2, 0.4, 0.6, 0.8, 1.0])
+axB.set_ylim(-0.6, 2.75)
+axB.set_title("b   The promoter ratio is the product of two", loc="left",
               fontsize=12, fontweight="bold")
 axB.grid(axis="x", color="#DDDDDD", lw=0.6)
 axB.set_axisbelow(True)
-axB.invert_yaxis()
 
 axB.text(0.5, -0.19,
          f"{row.bg_ratio:.3f} × {row.norm_ratio_of_means:.3f}"
-         f" = {row.prom_ratio:.3f}\nbackground ring {RING};"
+         f" = {row.prom_ratio:.3f}, a product and not a sum\nbackground ring {RING};"
          f" rank-biserial r falls {row.r_prom:.3f} → {row.r_norm:.3f}",
          transform=axB.transAxes, ha="center", va="top", fontsize=9.5,
          color="#444444")
