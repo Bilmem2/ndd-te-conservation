@@ -27,9 +27,9 @@ fetches them. Everything needed to regenerate the **statistics and figures** is 
 
 | Path | Contents |
 |------|----------|
-| `scripts/` | Numbered `00`–`49` in the order the analysis was built; the recipe below marks which of them reproduce the published results. `fig_*.py` draw the figures; `probe_*.py` are exploratory probes |
+| `scripts/` | Numbered `00`–`50` in the order the analysis was built; the recipe below marks which of them reproduce the published results. `fig_*.py` draw the figures; `probe_*.py` are exploratory probes |
 | `data/gene_lists/` | HighConfNDD (n = 1020) and Housekeeping (n = 1679), plus the ClinVar disease sets in a loose and a strict version — the manuscript uses the strict ones |
-| `data/orthologs/` | Ensembl BioMart 1:1 ortholog tables, committed on purpose (see below) |
+| `data/orthologs/` | Cached Ensembl BioMart 1:1 ortholog tables; two of the eight are here (see below) |
 | `results/` — one per assembly | `hg38`, `ponAbe3`, `nomLeu3`, `rheMac10`, `calJac4`, `saiBol1`, `mmur3`, `mm10`, `canFam6`: promoter BEDs with TE counts, one file per gene set and element class |
 | `results/consolidated/` | Master cross-species table, BH *q*-values |
 | `results/context/` | Gene density and recombination controls |
@@ -56,7 +56,7 @@ documents themselves are part of the manuscript and are not in this repository.
 | `Fig4_cCRE` | Figure 4 | `fig_new.py` | ENCODE cCRE overlay |
 | `Fig5_BrainSpecificity` | Figure 5 | `fig_brain.py` | Fetal-brain regulatory specificity |
 | `Fig6_Flanking` | Figure 6 | `fig_flanking.py` | Promoter versus regional depletion |
-| `ESM1_LINE1_Mammals` | Online Resource 1 | `fig_line1_esm1.py` | SINE and LINE-1 density across nine genomes |
+| `ESM1_LINE1_Mammals` | Online Resource 1 | `fig_line1_esm1.py` | GC-biased SINE and LINE-1 density across nine genomes |
 | `ESM2_NullModel` | Online Resource 2 | `fig_null_update.py` | Permutation null model |
 | `ESM3_CpG` | Online Resource 3 | `12_figures_final.py` | CpG island stratification |
 | `ESM4_GC_Analysis` | Online Resource 4 | `40_gc_analysis.py` | Promoter GC content |
@@ -95,21 +95,17 @@ stripped before matching.
 
 ### Ortholog tables
 
-BioMart content changes between releases, so the tables that were used are
-cached in `data/orthologs/` rather than refetched. Each was pulled from the
-`hsapiens_gene_ensembl` dataset with the `<species>_homolog_*` attributes and
-filtered to `ortholog_one2one`; the squirrel monkey prefix is `sbboliviensis`.
+BioMart content changes between releases, so the tables used are cached in
+`data/orthologs/` rather than refetched. Each was pulled from
+`hsapiens_gene_ensembl` with the `<species>_homolog_*` attributes and filtered
+to `ortholog_one2one`; the squirrel monkey prefix is `sbboliviensis`.
 
-Two of them are committed, `mmur3_raw.tsv` and `saiBol1_raw.tsv`, so
-`21_lemur_ortholog.py` and `38_squirrel_ortholog.py` run as they stand. The six
-tables that `13_ortholog_analysis.py` needs — orangutan, gibbon, macaque,
-marmoset, mouse and dog — are **not** in the repository. That script tries to
-download them and, failing that, prints the exact BioMart query and file path
-for each. At the last check (22 September 2026) the `martservice` endpoint was
-answering "Service unavailable", so expect to build those six by hand from
-[BioMart](https://www.ensembl.org/biomart/martview) if you want to rerun this
-step. Its published output, `results/statistics_ortholog.csv`, is committed, so
-the numbers quoted in Methods 2.6 can be checked without it.
+Only `mmur3_raw.tsv` and `saiBol1_raw.tsv` are committed, so
+`13_ortholog_analysis.py` has to fetch the other six and prints the query and
+path for each if it cannot — as of 22 September 2026 the `martservice` endpoint
+returns "Service unavailable", so expect to export them by hand. Its output,
+`results/statistics_ortholog.csv`, is committed, so the numbers in Methods 2.6
+can be checked either way.
 
 ### Other datasets
 
@@ -127,21 +123,6 @@ the numbers quoted in Methods 2.6 can be checked without it.
 | ENCODE fetal DNase-seq | brain ENCFF955AQD, ENCFF631TDE, ENCFF670PXX; non-neural ENCFF667IEN, ENCFF362PZG, ENCFF016LYI |
 | Recombination map (GRCh38, deCODE-derived) | https://bochet.gcc.biostat.washington.edu/beagle/genetic_maps/ |
 | gnomAD v4.1 SV mobile-element insertions | https://gnomad.broadinstitute.org *(exploratory only)* |
-
-Two inputs are derived from the downloads above rather than fetched directly,
-and `00_download_data.sh` does not build them, so the scripts that read them
-stop unless you make them first:
-
-| File | Built from | Read by |
-|------|-----------|---------|
-| `data/hg38/gnomad_mei.tsv` | the `INS:ME:*` rows of `gnomad.v4.1.sv.sites.bed.gz`, keeping chrom, start, end, name, svtype, AN, AC, AF | `14_gnomad_mei.py`, `44_mei_matched.py` |
-| `data/hg38/alu_detailed.bed` | the hg38 `rmsk` track, keeping chrom, start, end, repName, milliDiv for `SINE/Alu` | `probe_subfamily.py` |
-
-Both belong to analyses outside the main recipe. The polymorphic-insertion
-comparison that `44_mei_matched.py` produces is quoted in the manuscript
-(Section 4.7) and is reported there as inconclusive; its output,
-`results/gnomad_mei/matched_mei.csv`, is committed, so that number can be
-checked without rebuilding the input.
 
 The first five are downloaded by hand rather than by `00_download_data.sh`,
 because each portal exports through its own button. None requires an account.
@@ -171,6 +152,14 @@ the pipeline out of step with the paper. Pass `--overwrite` to rebuild the lists
 from whatever sources are present; every downstream result then belongs to that
 release, not to the one reported.
 
+Two further inputs are derived from the downloads above rather than fetched, and
+`00_download_data.sh` does not build them: `data/hg38/gnomad_mei.tsv`, the
+`INS:ME:*` rows of `gnomad.v4.1.sv.sites.bed.gz` with chrom, start, end, name,
+svtype, AN, AC and AF; and `data/hg38/alu_detailed.bed`, the `SINE/Alu` rows of
+the hg38 `rmsk` track with chrom, start, end, repName and milliDiv. Both belong
+to analyses outside the recipe, and both outputs are committed, so nothing in
+the manuscript depends on rebuilding them.
+
 ---
 
 ## Requirements
@@ -180,8 +169,9 @@ conda env create -f environment.yml
 conda activate bio_master
 ```
 
-Python 3.10 with pandas, numpy, scipy, matplotlib, seaborn, **twobitreader** and
-**tabulate**. **BEDTools ≥ 2.31** must be installed separately; the scripts that
+Python 3.14 with pandas, numpy, scipy, matplotlib, seaborn, **twobitreader** and
+**tabulate**; `environment.yml` pins the versions the reported analyses were run
+under. **BEDTools ≥ 2.31** must be installed separately; the scripts that
 do not call it compute interval overlaps in NumPy instead, and that routine was
 checked against `bedtools intersect -c` on the hg38 CpG-island track. The
 syntenic transfer also needs the UCSC `liftOver` binary in `tools/`.
@@ -205,7 +195,7 @@ conda env create -f environment.yml && conda activate bio_master
 bash scripts/00_download_data.sh          # raw genomes, GTF, RepeatMasker
 
 # 1–5  build gene lists, TE BEDs, promoter windows, TE counts per promoter
-python scripts/01_prepare_gene_lists.py   # see note below before running
+python scripts/01_prepare_gene_lists.py   # needs data/sources/; see Data sources
 bash   scripts/02_rmsk_to_bed.sh
 bash   scripts/03_get_promoters.sh
 bash   scripts/04_split_promoters.sh
@@ -213,7 +203,7 @@ bash   scripts/05_intersect.sh
 
 # 6    core cross-species statistics
 python scripts/11_stats_updated.py
-python scripts/13_ortholog_analysis.py    # 1:1 ortholog validation
+python scripts/13_ortholog_analysis.py    # needs six BioMart tables; see Data sources
 
 # 7    promoter window sizes and cross-disease sets
 python scripts/09_window_sensitivity.py
