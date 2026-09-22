@@ -2,12 +2,78 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 import os
+import sys
+import urllib.parse
+import urllib.request
 from pathlib import Path
+
+sys.stdout.reconfigure(encoding="utf-8")
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DATA    = REPO_ROOT / "data"
 ORTHO   = f"{DATA}/orthologs"
 RESULTS = REPO_ROOT / "results"
+
+# BioMart ortholog tables are downloaded on first use and cached under
+# data/orthologs/, the way 21_lemur_ortholog.py and 38_squirrel_ortholog.py do
+# it. The cache is what makes a rerun reproducible: BioMart content changes
+# between releases, so once a table is on disk it is reused rather than refetched.
+BIOMART = "https://www.ensembl.org/biomart/martservice"
+ORTHO_QUERY = '''<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Query>
+<Query virtualSchemaName="default" formatter="TSV" header="1" uniqueRows="1" datasetConfigVersion="0.6">
+<Dataset name="hsapiens_gene_ensembl" interface="default">
+<Attribute name="ensembl_gene_id"/>
+<Attribute name="{p}_homolog_ensembl_gene"/>
+<Attribute name="{p}_homolog_orthology_type"/>
+</Dataset>
+</Query>'''
+
+
+def ortholog_table(sp_code, prefix):
+    """The 1:1 ortholog table for one species, from cache or from BioMart.
+
+    The cache is what makes a rerun reproducible, since BioMart content changes
+    between releases. Downloading is a fallback for a table that is not yet
+    cached, and it is not guaranteed to work: the service was returning
+    "Service unavailable" at the martservice endpoint when this was last
+    checked (22 September 2026), so the message below tells the caller how to
+    supply the file by hand.
+    """
+    cache = Path(ORTHO) / f"{sp_code}_raw.tsv"
+    if cache.exists() and cache.stat().st_size > 1000:
+        return pd.read_csv(cache, sep="\t", header=0,
+                           names=["ensembl_id", "ortholog_id", "orthology_type"],
+                           dtype=str)
+
+    print(f"  {sp_code}: onbellek yok, BioMart deneniyor ({prefix}) ...")
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        data = urllib.parse.urlencode({"query": ORTHO_QUERY.format(p=prefix)}).encode()
+        with urllib.request.urlopen(urllib.request.Request(BIOMART, data=data),
+                                    timeout=300) as r:
+            txt = r.read().decode()
+        if txt.lstrip().startswith(("Query ERROR", "<html", "<!DOCTYPE")) or len(txt) < 1000:
+            raise RuntimeError("BioMart returned no table")
+    except Exception as exc:
+        raise SystemExit(
+            f"\n{sp_code}: ortholog table missing and BioMart unreachable ({exc}).\n"
+            f"\nExpected file: {cache.relative_to(REPO_ROOT)}\n"
+            f"Three tab-separated columns with a header line:\n"
+            f"  human Ensembl gene ID, {prefix} ortholog ID, orthology type\n"
+            f"\nBuild it at https://www.ensembl.org/biomart/martview from the\n"
+            f"hsapiens_gene_ensembl dataset with the attributes\n"
+            f"  ensembl_gene_id, {prefix}_homolog_ensembl_gene,\n"
+            f"  {prefix}_homolog_orthology_type\n"
+            f"and save the TSV to that path. The committed tables for mouse\n"
+            f"lemur and squirrel monkey show the expected format.\n"
+            f"\nThis step validates the symbol-based matching reported in\n"
+            f"Methods 2.6; its published output is results/statistics_ortholog.csv.\n")
+    cache.write_text(txt, encoding="utf-8")
+    print(f"    onbellege yazildi: {cache.relative_to(REPO_ROOT)}")
+    return pd.read_csv(cache, sep="\t", header=0,
+                       names=["ensembl_id", "ortholog_id", "orthology_type"],
+                       dtype=str)
 
 # Sembol tablosunu yükle
 sym_df = pd.read_csv(f"{ORTHO}/ensembl_to_symbol.tsv", sep='\t',
@@ -49,9 +115,7 @@ def get_density(filepath):
 results = []
 
 for sp_code, prefix in species.items():
-    raw_file = f"{ORTHO}/{sp_code}_raw.tsv"
-    col_names = ['ensembl_id', 'ortholog_id', 'orthology_type']
-    ortho_df = pd.read_csv(raw_file, sep='\t', header=0, names=col_names)
+    ortho_df = ortholog_table(sp_code, prefix)
 
     # 1:1 ortologları filtrele
     one2one = ortho_df[ortho_df['orthology_type']=='ortholog_one2one'].copy()

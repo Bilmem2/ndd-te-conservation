@@ -95,12 +95,21 @@ stripped before matching.
 
 ### Ortholog tables
 
-The 1:1 ortholog tables in `data/orthologs/` are committed rather than fetched,
-because BioMart changes between releases and shipping the exact tables is what
-makes the ortholog validation reproducible. Each was pulled from the
-`hsapiens_gene_ensembl` dataset with the `<species>_homolog_associated_gene_name`
-and `<species>_homolog_orthology_type` attributes, filtered to `ortholog_one2one`;
-the squirrel monkey prefix is `sbboliviensis`.
+BioMart content changes between releases, so the tables that were used are
+cached in `data/orthologs/` rather than refetched. Each was pulled from the
+`hsapiens_gene_ensembl` dataset with the `<species>_homolog_*` attributes and
+filtered to `ortholog_one2one`; the squirrel monkey prefix is `sbboliviensis`.
+
+Two of them are committed, `mmur3_raw.tsv` and `saiBol1_raw.tsv`, so
+`21_lemur_ortholog.py` and `38_squirrel_ortholog.py` run as they stand. The six
+tables that `13_ortholog_analysis.py` needs — orangutan, gibbon, macaque,
+marmoset, mouse and dog — are **not** in the repository. That script tries to
+download them and, failing that, prints the exact BioMart query and file path
+for each. At the last check (22 September 2026) the `martservice` endpoint was
+answering "Service unavailable", so expect to build those six by hand from
+[BioMart](https://www.ensembl.org/biomart/martview) if you want to rerun this
+step. Its published output, `results/statistics_ortholog.csv`, is committed, so
+the numbers quoted in Methods 2.6 can be checked without it.
 
 ### Other datasets
 
@@ -118,6 +127,21 @@ the squirrel monkey prefix is `sbboliviensis`.
 | ENCODE fetal DNase-seq | brain ENCFF955AQD, ENCFF631TDE, ENCFF670PXX; non-neural ENCFF667IEN, ENCFF362PZG, ENCFF016LYI |
 | Recombination map (GRCh38, deCODE-derived) | https://bochet.gcc.biostat.washington.edu/beagle/genetic_maps/ |
 | gnomAD v4.1 SV mobile-element insertions | https://gnomad.broadinstitute.org *(exploratory only)* |
+
+Two inputs are derived from the downloads above rather than fetched directly,
+and `00_download_data.sh` does not build them, so the scripts that read them
+stop unless you make them first:
+
+| File | Built from | Read by |
+|------|-----------|---------|
+| `data/hg38/gnomad_mei.tsv` | the `INS:ME:*` rows of `gnomad.v4.1.sv.sites.bed.gz`, keeping chrom, start, end, name, svtype, AN, AC, AF | `14_gnomad_mei.py`, `44_mei_matched.py` |
+| `data/hg38/alu_detailed.bed` | the hg38 `rmsk` track, keeping chrom, start, end, repName, milliDiv for `SINE/Alu` | `probe_subfamily.py` |
+
+Both belong to analyses outside the main recipe. The polymorphic-insertion
+comparison that `44_mei_matched.py` produces is quoted in the manuscript
+(Section 4.7) and is reported there as inconclusive; its output,
+`results/gnomad_mei/matched_mei.csv`, is committed, so that number can be
+checked without rebuilding the input.
 
 The first five are downloaded by hand rather than by `00_download_data.sh`,
 because each portal exports through its own button. None requires an account.
@@ -223,6 +247,8 @@ python scripts/38_squirrel_ortholog.py    # squirrel monkey 1:1 ortholog control
 python scripts/39_squirrel_line1.py       # squirrel monkey LINE-1 (completes the panel)
 python scripts/40_gc_analysis.py          # promoter GC + GC-stratified depletion; draws ESM 4
 python scripts/41_dog_cansine.py          # dog Can-SINE boundary test
+python scripts/50_genome_baseline_by_class.py  # genome baseline per element class, all
+                                          # nine genomes (Table 4); needs 20, 37 and 41
 python scripts/42_coverage_robustness.py  # Alu as merged bp coverage, not record counts
 python scripts/43_flanking_control.py     # promoter vs flanking windows out to 250 kb
 
@@ -254,7 +280,7 @@ Two Online Resources are absent from this step. ESM 4 is drawn by
 `40_gc_analysis.py` in step 10, which performs the GC analysis and its figure
 together; ESM 6 is supplementary text and has no figure.
 
-The recipe calls 52 of the 60 scripts. The other eight are kept for provenance:
+The recipe calls 53 of the 61 scripts. The other eight are kept for provenance:
 `06_statistics.py` and `08_encode_overlap_v2.py`, superseded by
 `11_stats_updated.py` and `16_ccre_overlay.py`; `07_pli_correlation.py`,
 `14_gnomad_mei.py`, `17_functional_consequence.py` and `44_mei_matched.py`,
