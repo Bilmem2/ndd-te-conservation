@@ -103,7 +103,8 @@ axB.barh([1], [local], color="#C98B5E", edgecolor="black", lw=0.7, height=0.52)
 axB.barh([0], [observed], color=PROM, edgecolor="black", lw=0.7, height=0.52)
 
 axB.axvline(1.0, color="black", lw=0.9, ls="--", zorder=3)
-axB.text(1.0, 2.52, "no depletion", fontsize=8.5, ha="center", va="bottom")
+# set beside the line, not centred on it, or the rule strikes through the text
+axB.text(0.98, 2.50, "no depletion", fontsize=8.5, ha="right", va="bottom")
 
 for y, v in ((2, regional), (1, local), (0, observed)):
     axB.text(v + 0.018, y, f"{v:.3f}", va="center", fontsize=10.5,
